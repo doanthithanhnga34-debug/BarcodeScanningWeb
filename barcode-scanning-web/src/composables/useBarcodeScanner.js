@@ -1,4 +1,4 @@
-import { ref, onMounted, onUnmounted } from "vue";
+import { ref, onMounted, onUnmounted,nextTick } from "vue";
 import {
   getVideoDevices,
   startZxingScanner,
@@ -15,6 +15,7 @@ export function useBarcodeScanner() {
   const errorMessage = ref("");
 
   onMounted(async () => {
+    await nextTick();
     try {
       devices.value = await getVideoDevices();
 
