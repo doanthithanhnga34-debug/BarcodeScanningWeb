@@ -1,4 +1,4 @@
-import { ref, onMounted, onUnmounted,nextTick } from "vue";
+import { ref, onMounted, onUnmounted, nextTick } from "vue";
 import {
   getVideoDevices,
   startZxingScanner,
@@ -14,43 +14,53 @@ export function useBarcodeScanner() {
   const isScanning = ref(false);
   const errorMessage = ref("");
 
-  onMounted(async () => {
-    await nextTick();
-    try {
-      devices.value = await getVideoDevices();
+  // onMounted(async () => {
+  //   await nextTick();
+  //   try {
+  //     devices.value = await getVideoDevices();
 
-      if (devices.value.length > 0) {
-        selectedDeviceId.value = devices.value[0].deviceId;
-      }
-    } catch (error) {
-      errorMessage.value = "Không lấy được Camera";
-      console.log(error);
-    }
-  });
+  //     if (devices.value.length > 0) {
+  //       selectedDeviceId.value = devices.value[0].deviceId;
+  //     }
+  //   } catch (error) {
+  //     errorMessage.value = "Không lấy được Camera";
+  //     console.log(error);
+  //   }
+  // });
+
+  // async function startScanner() {
+  //   if (!videoRef.value) return;
+
+  //   result.value = "";
+  //   errorMessage.value = "";
+  //   isScanning.value = true;
+  //   try {
+  //     await startZxingScanner(
+  //       videoRef.value,
+  //       selectedDeviceId.value,
+  //       (value) => {
+  //         result.value=value;
+  //         stopScanner();
+  //       },
+  //       (error) => {
+  //         errorMessage.value = "Lỗi khi scan";
+  //         console.log(error);
+  //       },
+  //     );
+  //   } catch (err) {
+  //     errorMessage.value = "Không mở được camera";
+  //     console.error(err);
+  //   }
+  // }
 
   async function startScanner() {
-    if (!videoRef.value) return;
+    await nextTick();
 
-    result.value = "";
-    errorMessage.value = "";
-    isScanning.value = true;
-    try {
-      await startZxingScanner(
-        videoRef.value,
-        selectedDeviceId.value,
-        (value) => {
-          result.value=value;
-          stopScanner();
-        },
-        (error) => {
-          errorMessage.value = "Lỗi khi scan";
-          console.log(error);
-        },
-      );
-    } catch (err) {
-      errorMessage.value = "Không mở được camera";
-      console.error(err);
-    }
+    const devices = await getVideoDevices();
+
+    await startZxingScanner(videoRef.value, devices[0].deviceId, (value) => {
+      result.value = value;
+    });
   }
 
   function stopScanner() {
