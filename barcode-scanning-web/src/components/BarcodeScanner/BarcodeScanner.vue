@@ -26,10 +26,10 @@ const { videoRef,devices, selectedDeviceId, result, isScanning,errorMessage, sta
     <br /><br />
 
     <button @click="startScanner":disabled="!selectedDeviceId">
-      {{ isScanning ? "Đang quét..." : "Bắt đầu quét" }}
+      Bắt Đầu 
     </button>
 
-    
+
      <button @click="stopScanner">Dừng</button>
 
     <h3>Kết quả:</h3>
