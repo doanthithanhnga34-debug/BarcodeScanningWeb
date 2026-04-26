@@ -1,4 +1,4 @@
-import { ref, onMounted, onUnmounted, nextTick } from "vue";
+import { ref, onUnmounted, nextTick } from "vue";
 import {
   getVideoDevices,
   startZxingScanner,
@@ -15,69 +15,22 @@ export function useBarcodeScanner() {
   const isScanning = ref(false);
   const errorMessage = ref("");
 
-  // onMounted(async () => {
-  //   await nextTick();
-  //   try {
-  //     devices.value = await getVideoDevices();
-
-  //     if (devices.value.length > 0) {
-  //       selectedDeviceId.value = devices.value[0].deviceId;
-  //     }
-  //   } catch (error) {
-  //     errorMessage.value = "Không lấy được Camera";
-  //     console.log(error);
-  //   }
-  // });
-
-  // async function startScanner() {
-  //   if (!videoRef.value) return;
-
-  //   result.value = "";
-  //   errorMessage.value = "";
-  //   isScanning.value = true;
-  //   try {
-  //     await startZxingScanner(
-  //       videoRef.value,
-  //       selectedDeviceId.value,
-  //       (value) => {
-  //         result.value=value;
-  //         stopScanner();
-  //       },
-  //       (error) => {
-  //         errorMessage.value = "Lỗi khi scan";
-  //         console.log(error);
-  //       },
-  //     );
-  //   } catch (err) {
-  //     errorMessage.value = "Không mở được camera";
-  //     console.error(err);
-  //   }
-  // }
-
   async function startScanner() {
+    if(isScanning.value) return;
     try {
       showCamera.value = true;
+      isScanning= true;
 
       console.log("videoRef trước nextTick:", videoRef.value);
 
-      await nextTick(); // 🔥 đợi DOM render video
+      await nextTick(); 
 
       console.log("videoRef sau nextTick:", videoRef.value);
+      if (!videoRef.value) {
+        throw new Error("Không tìm thấy camera view");
+      }
+
       const deviceList = await getVideoDevices();
-
-      devices.value = deviceList;
-
-      console.log("devices:", deviceList);
-
-      const backCamera = deviceList.find(
-        (d) =>
-          d.label?.toLowerCase().includes("back") ||
-          d.label?.toLowerCase().includes("rear") ||
-          d.label?.toLowerCase().includes("environment"),
-      );
-
-      const deviceId =
-        backCamera?.deviceId || deviceList[deviceList.length - 1]?.deviceId;
 
       await startZxingScanner(
         videoRef.value,
@@ -94,12 +47,39 @@ export function useBarcodeScanner() {
       console.error(err);
     }
   }
+ async function loadDevices(){
+  try {
+    const deviceList = await getVideoDevices();
+    devices.value = deviceList;
 
+    const backCamera = deviceList.find((device)=>{
+      const label = device.label?.toLowerCase() || "";
+      return (
+        label.includes("back")|| label.includes("rear")|| label.includes("environment")
+      )
+    })
+
+    selectedDeviceId.value  = selectedDeviceId.value || backCamera?.deviceId || deviceList[deviceList.length -1]?.deviceId || "";
+    
+  } catch (error) {
+    console.error(error);
+  }
+ }
   function stopScanner() {
     stopZxingScanner();
     isScanning.value = false;
+    showCamera.value = false;
   }
 
+  function saveToHistory(value){
+    const oldHistory = JSON.parse(localStorage.getItem("scanHistory"))||[];
+    const newItem ={
+      id:Date.now(),
+      value,
+      date :new Date().toLocaleDateString(),
+    }
+    localStorage.setItem("scanHistory",JSON.stringify([newItem, ...oldHistory]))
+  }
   onUnmounted(() => {
     stopScanner();
   });
@@ -114,5 +94,6 @@ export function useBarcodeScanner() {
     errorMessage,
     startScanner,
     stopScanner,
+    loadDevices
   };
 }
