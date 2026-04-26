@@ -8,7 +8,7 @@ export function initScanner() {
 
 export async function getVideoDevices() {
   if (!codeReader) initScanner();
-  const devices = await codeReader.listVideoInputDevices();
+  const devices = await BrowserMultiFormatReader.listVideoInputDevices();
   return devices;
 }
 
