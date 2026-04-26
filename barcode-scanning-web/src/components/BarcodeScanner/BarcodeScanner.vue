@@ -1,6 +1,5 @@
 <script setup>
-import { useBarcodeScanner } from "@/composables/useBarcodeScanner";
-
+import { useBarcodeScanner } from "../../composables/useBarcodeScanner";
 const { videoRef,devices, selectedDeviceId, result, isScanning,errorMessage, startScanner, stopScanner } = useBarcodeScanner();
 </script>
 
@@ -18,6 +17,9 @@ const { videoRef,devices, selectedDeviceId, result, isScanning,errorMessage, sta
     </select>
     <video
       ref="videoRef"
+      autoplay
+        muted
+    playsinline
       style="width: 100%; max-width: 400px"
     ></video>
 
@@ -26,6 +28,8 @@ const { videoRef,devices, selectedDeviceId, result, isScanning,errorMessage, sta
     <button @click="startScanner":disabled="!selectedDeviceId">
       {{ isScanning ? "Đang quét..." : "Bắt đầu quét" }}
     </button>
+
+    
      <button @click="stopScanner">Dừng</button>
 
     <h3>Kết quả:</h3>
