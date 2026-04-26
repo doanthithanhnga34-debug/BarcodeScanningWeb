@@ -60,10 +60,22 @@ export function useBarcodeScanner() {
       console.log("videoRef trước nextTick:", videoRef.value);
       await nextTick(); // 🔥 đợi DOM render video
       console.log("videoRef sau nextTick:", videoRef.value);
-      await navigator.mediaDevices.getUserMedia({ video: true });
+      await navigator.mediaDevices
+        .getUserMedia({
+          video: {
+            facingMode: "environment",
+          },
+        })
+        .then((stream) => {
+          const video = document.querySelector("video");
+          video.srcObject = stream;
+        })
+        .catch((err) => {
+          console.log("Lỗi camera:", err);
+        });
 
       const devices = await getVideoDevices();
-       const deviceId = devices[0]?.deviceId;
+      const deviceId = devices[0]?.deviceId;
       console.log("devices:", devices);
 
       await startZxingScanner(
