@@ -19,7 +19,7 @@ export function useBarcodeScanner() {
     if(isScanning.value) return;
     try {
       showCamera.value = true;
-      isScanning= true;
+      isScanning.value= true;
 
       console.log("videoRef trước nextTick:", videoRef.value);
 
@@ -30,8 +30,8 @@ export function useBarcodeScanner() {
         throw new Error("Không tìm thấy camera view");
       }
 
-      const deviceList = await getVideoDevices();
-
+        await loadDevices();
+        
       await startZxingScanner(
         videoRef.value,
         deviceId,

@@ -1,5 +1,8 @@
 
-
+<script setup>
+import { useBarcodeScanner } from "../../composables/useBarcodeScanner";
+const { videoRef,devices,showCamera, selectedDeviceId, result, isScanning,errorMessage, startScanner, stopScanner, loadDevices } = useBarcodeScanner();
+</script>
 <template>
   <div class="p-5">
     <h2 class="mb-4 text-xl font-bold">Scan mã hàng sản phẩm</h2>
@@ -59,7 +62,3 @@
   </div>
 </template>
 
-<script setup>
-import { useBarcodeScanner } from "../../composables/useBarcodeScanner";
-const { videoRef,devices,showCamera, selectedDeviceId, result, isScanning,errorMessage, startScanner, stopScanner, loadDevices } = useBarcodeScanner();
-</script>
