@@ -16,69 +16,83 @@ export function useBarcodeScanner() {
   const errorMessage = ref("");
 
   async function startScanner() {
-    if(isScanning.value) return;
+    if (isScanning.value) return;
     try {
       showCamera.value = true;
-      isScanning.value= true;
+      isScanning.value = true;
 
       console.log("videoRef trước nextTick:", videoRef.value);
 
-      await nextTick(); 
+      await nextTick();
 
       console.log("videoRef sau nextTick:", videoRef.value);
       if (!videoRef.value) {
         throw new Error("Không tìm thấy camera view");
       }
 
-        await loadDevices();
-        
+      await loadDevices();
+
       await startZxingScanner(
         videoRef.value,
-        deviceId,
+        selectedDeviceId.value,
         (value) => {
           result.value = value;
+          saveToHistory(value);
+
+          stopScanner();
         },
         (error) => {
-          console.log(error);
+          console.error(error);
+          errorMessage.value = "Không thể quét mã hàng";
         },
       );
-      console.log("videoRef:", videoRef.value);
     } catch (err) {
       console.error(err);
+      errorMessage.value = err.message || "Không thể mở camera";
+      isScanning.value = false;
+      showCamera.value = false;
     }
   }
- async function loadDevices(){
-  try {
-    const deviceList = await getVideoDevices();
-    devices.value = deviceList;
+  async function loadDevices() {
+    try {
+      const deviceList = await getVideoDevices();
+      devices.value = deviceList;
 
-    const backCamera = deviceList.find((device)=>{
-      const label = device.label?.toLowerCase() || "";
-      return (
-        label.includes("back")|| label.includes("rear")|| label.includes("environment")
-      )
-    })
+      const backCamera = deviceList.find((device) => {
+        const label = device.label?.toLowerCase() || "";
+        return (
+          label.includes("back") ||
+          label.includes("rear") ||
+          label.includes("environment")
+        );
+      });
 
-    selectedDeviceId.value  = selectedDeviceId.value || backCamera?.deviceId || deviceList[deviceList.length -1]?.deviceId || "";
-    
-  } catch (error) {
-    console.error(error);
+      selectedDeviceId.value =
+        backCamera?.deviceId ||
+        deviceList[deviceList.length - 1]?.deviceId ||
+        "";
+    } catch (error) {
+      console.error(error);
+    }
   }
- }
   function stopScanner() {
     stopZxingScanner();
+
     isScanning.value = false;
     showCamera.value = false;
   }
 
-  function saveToHistory(value){
-    const oldHistory = JSON.parse(localStorage.getItem("scanHistory"))||[];
-    const newItem ={
-      id:Date.now(),
+  function saveToHistory(value) {
+    const oldHistory = JSON.parse(localStorage.getItem("scanHistory")) || [];
+    const newItem = {
+      id: Date.now(),
       value,
-      date :new Date().toLocaleDateString(),
-    }
-    localStorage.setItem("scanHistory",JSON.stringify([newItem, ...oldHistory]))
+      date: new Date().toLocaleDateString(),
+    };
+    localStorage.setItem(
+      "scanHistory",
+      JSON.stringify([newItem, ...oldHistory]),
+    );
   }
   onUnmounted(() => {
     stopScanner();
@@ -94,6 +108,6 @@ export function useBarcodeScanner() {
     errorMessage,
     startScanner,
     stopScanner,
-    loadDevices
+    loadDevices,
   };
 }
