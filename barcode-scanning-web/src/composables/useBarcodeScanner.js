@@ -57,19 +57,27 @@ export function useBarcodeScanner() {
   async function startScanner() {
     try {
       showCamera.value = true;
-      console.log("videoRef trước nextTick:", videoRef.value);
-      await nextTick(); // 🔥 đợi DOM render video
-      console.log("videoRef sau nextTick:", videoRef.value);
-      const backCamera = devices.find(
-      d =>
-        d.label.toLowerCase().includes("back") ||
-        d.label.toLowerCase().includes("rear") ||
-        d.label.toLowerCase().includes("environment")
-    );
 
-      const devices = await getVideoDevices();
-      const deviceId = backCamera?.deviceId || devices[0]?.deviceId;
-      console.log("devices:", devices);
+      console.log("videoRef trước nextTick:", videoRef.value);
+
+      await nextTick(); // 🔥 đợi DOM render video
+
+      console.log("videoRef sau nextTick:", videoRef.value);
+      const deviceList = await getVideoDevices();
+
+      devices.value = deviceList;
+
+      console.log("devices:", deviceList);
+
+      const backCamera = deviceList.find(
+        (d) =>
+          d.label?.toLowerCase().includes("back") ||
+          d.label?.toLowerCase().includes("rear") ||
+          d.label?.toLowerCase().includes("environment"),
+      );
+
+      const deviceId =
+        backCamera?.deviceId || deviceList[deviceList.length - 1]?.deviceId;
 
       await startZxingScanner(
         videoRef.value,
