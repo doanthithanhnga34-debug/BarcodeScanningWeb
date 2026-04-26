@@ -1,7 +1,6 @@
 import { BrowserMultiFormatReader } from "@zxing/browser";
 
 let codeReader = null;
-let controll = null;
 
 export function initScanner() {
   codeReader = new BrowserMultiFormatReader();

@@ -12,17 +12,17 @@ export function useBarcodeScanner() {
 
   const result = ref("");
   const isScanning = ref(false);
-  const errorMesage = ref("");
+  const errorMessage = ref("");
 
   onMounted(async () => {
     try {
       devices.value = await getVideoDevices();
 
       if (devices.value.length > 0) {
-        selectedDeviceId = devices.value[0].deviceId;
+        selectedDeviceId.value = devices.value[0].deviceId;
       }
     } catch (error) {
-      errorMesage.value = "Không lấy được Camera";
+      errorMessage.value = "Không lấy được Camera";
       console.log(error);
     }
   });
@@ -31,18 +31,18 @@ export function useBarcodeScanner() {
     if (!videoRef.value) return;
 
     result.value = "";
-    errorMesage.value = "";
+    errorMessage.value = "";
     isScanning.value = true;
     try {
       await startZxingScanner(
         videoRef.value,
-        selectedDeviceId,
+        selectedDeviceId.value,
         (value) => {
-          result.value;
+          result.value=value;
           stopScanner();
         },
         (error) => {
-          errorMesage.value = "Lỗi khi scan";
+          errorMessage.value = "Lỗi khi scan";
           console.log(error);
         },
       );

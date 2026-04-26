@@ -1,7 +1,7 @@
 <script setup>
-import HelloWorld from './components/HelloWorld.vue'
+import BarCodeScanner from './components/BarcodeScanner/BarcodeScanner.vue'
 </script>
 
 <template>
-  <RouterView />
+  <BarCodeScanner/>
 </template>

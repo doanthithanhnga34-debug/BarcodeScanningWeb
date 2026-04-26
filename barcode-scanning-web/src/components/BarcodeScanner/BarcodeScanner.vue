@@ -1,7 +1,7 @@
 <script setup>
 import { useBarcodeScanner } from "@/composables/useBarcodeScanner";
 
-const { videoRef,devices, selectedDeviceId, result, isScanning,errorMesage, startScanner, stopScanner } = useBarcodeScanner();
+const { videoRef,devices, selectedDeviceId, result, isScanning,errorMessage, startScanner, stopScanner } = useBarcodeScanner();
 </script>
 
 <template>
@@ -23,7 +23,7 @@ const { videoRef,devices, selectedDeviceId, result, isScanning,errorMesage, star
 
     <br /><br />
 
-    <button @click="startScanner">
+    <button @click="startScanner":disabled="!selectedDeviceId">
       {{ isScanning ? "Đang quét..." : "Bắt đầu quét" }}
     </button>
      <button @click="stopScanner">Dừng</button>
