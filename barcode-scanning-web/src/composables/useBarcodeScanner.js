@@ -9,6 +9,7 @@ export function useBarcodeScanner() {
   const videoRef = ref(null);
   const devices = ref([]);
   const selectedDeviceId = ref("");
+   const showCamera = ref(false); 
 
   const result = ref("");
   const isScanning = ref(false);
@@ -53,15 +54,27 @@ export function useBarcodeScanner() {
   //   }
   // }
 
-  async function startScanner() {
-    await nextTick();
+ async function startScanner() {
+  try {
+     showCamera.value = true; 
+    await nextTick(); // 🔥 đợi DOM render video
 
     const devices = await getVideoDevices();
 
-    await startZxingScanner(videoRef.value, devices[0].deviceId, (value) => {
-      result.value = value;
-    });
+    await startZxingScanner(
+      videoRef.value,
+      devices[0].deviceId,
+      (value) => {
+        result.value = value;
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
+  } catch (err) {
+    console.error(err);
   }
+}
 
   function stopScanner() {
     stopZxingScanner();
