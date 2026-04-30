@@ -1,18 +1,22 @@
 <template>
-  <div
-    class="w-full fixed inset-x-0 top-0 z-10 border-b border-gray-950/5 dark:border-white/10"
+  <header
+    class="sticky inset-x-0 top-0 z-10 border-b border-slate-100 bg-white/90 px-5 py-4 backdrop-blur"
   >
-    <nav
-      class="bg-white dark:bg-gray-950 w-full p-4 flex flex-row items-center h-20"
-    >
-      <div class="w-10">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center gap-3">
         <img
           src="../../assets/image/logo_teobokki.png"
           alt="logo tteokbokki"
-          class="w-10 h-10"
+          class="w-10 md:w-32 lg:w-48"
         />
       </div>
-      <h5 class="w-80 text-left px-6">TTeobokki</h5>
-    </nav>
-  </div>
+     <div>
+            <p class="text-sm font-semibold text-slate-800">TTeobokki</p>
+            <p class="text-xs text-slate-400">Branch Management</p>
+          </div>
+          <button class="flex h-9 w-9 items-center justify-center rounded-full bg-slate-100 text-slate-500">
+          <i class="pi pi-cog"></i>
+        </button>
+    </div>
+  </header>
 </template>

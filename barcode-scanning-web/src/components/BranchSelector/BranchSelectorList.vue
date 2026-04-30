@@ -1,20 +1,23 @@
 <template>
-
-    <BranchSelectorRecentCard/>
-
-  <div class="w-full px-6">
-    <h5 class="w-full py-6 font-bold text-lg text-left">All Branches
-        <span>(24)</span>
-    </h5>
-    <ul class=" p-0 m-0 list-none bg-white rounded-xl shadow overflow-hidden">
-      <li
+  <BranchSelectorRecentCard />
+  <div class="w-full">
+    <div class="mb-3">
+      <p class="text-left text-sm font-bold text-slate-500">
+        All Branches
+        <span class="text-slate-400"> (24) </span>
+      </p>
+    </div>
+    <div
+      class="overflow-hidden rounded-3xl border border-slate-100 bg-white shadow-sm"
+    >
+      <button
         v-for="branch in branches"
         :key="branch.id"
-        class=""
+        class="flex w-full items-center gap-4 border-b border-slate-100 p-4 text-left transition last:border-b-0 hover:bg-slate-50 active:bg-slate-100"
       >
         <BranchSelectorCard :branch="branch" />
-      </li>
-    </ul>
+      </button>
+    </div>
   </div>
 </template>
 
@@ -34,7 +37,7 @@ const branches = ref([
     name: "Hoàng Thùy Linh",
     link: "",
   },
-   {
+  {
     id: 3,
     name: "Đặng Văn Bi",
     link: "",
