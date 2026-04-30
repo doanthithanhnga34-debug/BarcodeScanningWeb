@@ -74,7 +74,6 @@ export function useBarcodeScanner() {
 
       selectedDeviceId.value =
         backCamera?.deviceId ||
-        deviceList[deviceList.length - 1]?.deviceId ||
         "";
     } catch (error) {
       console.error(error);

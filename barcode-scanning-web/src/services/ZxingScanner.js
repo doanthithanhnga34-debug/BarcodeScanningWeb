@@ -51,8 +51,9 @@ export async function startZxingScanner(
         ? { deviceId: { exact: deviceId } }
         : { facingMode: { ideal: "environment" } }),
 
-      width: { ideal: 1280 },
-      height: { ideal: 720 },
+      width: { ideal: 640 },
+    height: { ideal: 480 },
+    aspectRatio: { ideal: 4 / 3 },
     },
     audio: false,
   }

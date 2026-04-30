@@ -76,7 +76,7 @@ function goBackToBranch(){
 
     <div
       v-if="showCamera"
-      class="relative aspect-[4/3] w-full max-w-[480px] overflow-hidden rounded-3xl bg-black shadow-lg"
+      class="relative w-full aspect-ratio overflow-hidden rounded-3xl bg-black shadow-lg"
     >
       <video
         ref="videoRef"
