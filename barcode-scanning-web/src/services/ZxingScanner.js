@@ -12,8 +12,12 @@ const PRODUCT_BARCODE_FORMATS = [
   BarcodeFormat.UPC_E,
   BarcodeFormat.CODE_128,
   BarcodeFormat.CODE_39,
+  BarcodeFormat.CODE_93,
   BarcodeFormat.ITF,
-];
+  BarcodeFormat.CODABAR,
+  BarcodeFormat.RSS_14,
+  BarcodeFormat.RSS_EXPANDED,
+].filter(Boolean);
 
 export function initScanner() {
   codeReader = new BrowserMultiFormatOneDReader();
@@ -47,9 +51,9 @@ export async function startZxingScanner(
   });
   const constraints={
    video: {
-      ...(deviceId
-        ? { deviceId: { exact: deviceId } }
-        : { facingMode: { ideal: "environment" } }),
+      // ...(deviceId
+      //   ? { deviceId: { exact: deviceId } }
+         facingMode: { ideal: "environment" },
 
       width: { ideal: 640 },
     height: { ideal: 480 },
@@ -57,31 +61,38 @@ export async function startZxingScanner(
     },
     audio: false,
   }
-  controll = codeReader.decodeFromConstraints(
+   controll = await codeReader.decodeFromConstraints(
     constraints,
     videoElement,
     (result, error, scanControll) => {
       if (result && !isResultLocked) {
         isResultLocked = true;
 
-        onResult(result.getText());
+       const value = result.getText();
         scanControll.stop();
         controll = null;
+        onResult(value);
         return;
 
       }
-      if (error && error.name != "NotFoundException" && error.name != ChecksumException && error.name != FormatException) {
+       const ignoredErrors = [
+        "NotFoundException",
+        "ChecksumException",
+        "FormatException",
+      ];
+
+      if (error && !ignoredErrors.includes(error.name)) {
         onError?.(error);
       }
     },
-  );
+  )
 }
 
 export function stopZxingScanner() {
-  if (controll) {
+  if (controll && typeof controll.stop === "function") {
     controll.stop();
-    controll= null;
   }
+  controll=null;
   codeReader = null;
   isResultLocked= false;
 }

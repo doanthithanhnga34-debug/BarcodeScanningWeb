@@ -76,7 +76,8 @@ function goBackToBranch(){
 
     <div
       v-if="showCamera"
-      class="relative w-full aspect-ratio overflow-hidden rounded-3xl bg-black shadow-lg"
+      class="relative w-full overflow-hidden rounded-3xl bg-black shadow-lg"
+  style="aspect-ratio: 4 / 3"
     >
       <video
         ref="videoRef"
@@ -86,16 +87,10 @@ function goBackToBranch(){
         class="h-full w-full object-contain"
       ></video>
 
-      <div class="absolute inset-0 flex items-center justify-center">
+      <div class="pointer-events-none absolute inset-0 flex items-center justify-center">
         <div class="w-3/4 h-24 border-4 border-white rounded-xl"></div>
       </div>
     </div>
-
-    <p v-if="errorMessage" class="mt-3 text-red-500">
-      {{ errorMessage }}
-    </p>
-
-    <h3 class="mt-4 font-bold">Kết quả:</h3>
 
     <p
       v-if="result"

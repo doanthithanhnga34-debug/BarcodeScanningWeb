@@ -18,6 +18,8 @@ export function useBarcodeScanner() {
   async function startScanner() {
     if (isScanning.value) return;
     try {
+      result.value="";
+      errorMessage.value=""
       showCamera.value = true;
       isScanning.value = true;
 
@@ -27,11 +29,11 @@ export function useBarcodeScanner() {
         throw new Error("Không tìm thấy camera view");
       }
 
-      await loadDevices();
+      // await loadDevices();
 
       await startZxingScanner(
         videoRef.value,
-        selectedDeviceId.value,
+        "",
         (value) => {
           result.value = value;
           saveToHistory(value);
