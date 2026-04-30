@@ -49,6 +49,14 @@ const router = useRouter();
 
 function selectBranch(branch) {
   console.log("Selected branch:", branch);
-  router.push('/scanner');
+  sessionStorage.setItem("selectedBranch", branch);
+
+  router.push({
+    path:'/scanner',
+    query:{
+      autoStart:"1",
+      branchId : branch.id
+    }
+  });
 }
 </script>
