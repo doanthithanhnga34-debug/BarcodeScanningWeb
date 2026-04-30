@@ -1,8 +1,10 @@
 <script setup>
-import BranchSelectorList from '../components/BranchSelector/BranchSelectorList.vue';
-
+import BranchSelectorList from "../components/BranchSelector/BranchSelectorList.vue";
 </script>
 
 <template>
-        <BranchSelectorList/>
+  <div class="mt-20">
+    <h1 class="text-2xl font-semibold text-gray-900">Select Branch</h1>
+    <BranchSelectorList />
+  </div>
 </template>

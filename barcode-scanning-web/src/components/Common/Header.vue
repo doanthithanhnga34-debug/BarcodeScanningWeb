@@ -7,7 +7,7 @@
     >
       <div class="w-10">
         <img
-          src="../../assets/logo_teobokki.png"
+          src="../../assets/image/logo_teobokki.png"
           alt="logo tteokbokki"
           class="w-10 h-10"
         />
