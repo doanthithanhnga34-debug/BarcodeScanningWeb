@@ -23,7 +23,7 @@ const selectedBranch = computed(()=>{
   if (!branch) return null;
 
   try {
-    return JSON.parse(savedBranch);
+    return JSON.parse(branch);
   } catch {
     return null;
   }
@@ -46,7 +46,7 @@ function goBackToBranch(){
     <div class="mb-4 flex gap-2">
       <button
         class="rounded-full bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm"
-        @click="goBackToBranches"
+        @click="goBackToBranch"
       >
         ← Branches
       </button>
@@ -76,14 +76,14 @@ function goBackToBranch(){
 
     <div
       v-if="showCamera"
-      class="relative overflow-hidden rounded-xl bg-black w-full max-w-md aspect-video"
+      class="relative aspect-[4/3] w-full max-w-[480px] overflow-hidden rounded-3xl bg-black shadow-lg"
     >
       <video
         ref="videoRef"
         autoplay
         muted
         playsinline
-        class="w-full"
+        class="h-full w-full object-contain"
       ></video>
 
       <div class="absolute inset-0 flex items-center justify-center">
