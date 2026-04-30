@@ -21,11 +21,8 @@ export function useBarcodeScanner() {
       showCamera.value = true;
       isScanning.value = true;
 
-      console.log("videoRef trước nextTick:", videoRef.value);
-
       await nextTick();
 
-      console.log("videoRef sau nextTick:", videoRef.value);
       if (!videoRef.value) {
         throw new Error("Không tìm thấy camera view");
       }
@@ -42,6 +39,14 @@ export function useBarcodeScanner() {
           stopScanner();
         },
         (error) => {
+          const ignoreErrors = [
+            "NotFoundException",
+            "ChecksumException",
+            "FormatException",
+          ];
+
+          if (ignoreErrors.includes(error?.name)) return;
+
           console.error(error);
           errorMessage.value = "Không thể quét mã hàng";
         },
