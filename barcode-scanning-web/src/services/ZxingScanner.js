@@ -1,5 +1,13 @@
-import {  BrowserCodeReader, BrowserMultiFormatOneDReader} from "@zxing/browser";
-import { BarcodeFormat, ChecksumException, DecodeHintType, FormatException } from "@zxing/library";
+import {
+  BrowserCodeReader,
+  BrowserMultiFormatOneDReader,
+} from "@zxing/browser";
+import {
+  BarcodeFormat,
+  ChecksumException,
+  DecodeHintType,
+  FormatException,
+} from "@zxing/library";
 
 let codeReader = null;
 let controll = null;
@@ -38,44 +46,47 @@ export async function startZxingScanner(
   if (!videoElement) {
     throw new Error("Video element chưa sẵn sàng");
   }
-   stopZxingScanner();
+  stopZxingScanner();
   isResultLocked = false;
 
-  const hints= new Map();
+  const hints = new Map();
   hints.set(DecodeHintType.POSSIBLE_FORMATS, PRODUCT_BARCODE_FORMATS);
-  
-  codeReader = new BrowserMultiFormatOneDReader(hints,{
-    delayBetweenScanAttempts:100,
-    delayBetweenScanSuccess:500,
-    tryPlayVideoTimeout:3000,
+
+  codeReader = new BrowserMultiFormatOneDReader(hints, {
+    delayBetweenScanAttempts: 50,
+    delayBetweenScanSuccess: 800,
+    tryPlayVideoTimeout: 3000,
   });
-  const constraints={
-   video: {
+  const constraints = {
+    video: {
       // ...(deviceId
       //   ? { deviceId: { exact: deviceId } }
-         facingMode: { ideal: "environment" },
+      facingMode: { ideal: "environment" },
 
       width: { ideal: 640 },
-    height: { ideal: 480 },
-    aspectRatio: { ideal: 4 / 3 },
+      height: { ideal: 480 },
+
+      advanced: [
+      { focusMode: "continuous" },
+      { exposureMode: "continuous" }
+    ]
     },
     audio: false,
-  }
-   controll = await codeReader.decodeFromConstraints(
+  };
+  controll = await codeReader.decodeFromConstraints(
     constraints,
     videoElement,
     (result, error, scanControll) => {
       if (result && !isResultLocked) {
         isResultLocked = true;
 
-       const value = result.getText();
+        const value = result.getText();
         scanControll.stop();
         controll = null;
         onResult(value);
         return;
-
       }
-       const ignoredErrors = [
+      const ignoredErrors = [
         "NotFoundException",
         "ChecksumException",
         "FormatException",
@@ -85,14 +96,15 @@ export async function startZxingScanner(
         onError?.(error);
       }
     },
-  )
+  );
+  await new Promise(res => setTimeout(res, 600));
 }
 
 export function stopZxingScanner() {
   if (controll && typeof controll.stop === "function") {
     controll.stop();
   }
-  controll=null;
+  controll = null;
   codeReader = null;
-  isResultLocked= false;
+  isResultLocked = false;
 }

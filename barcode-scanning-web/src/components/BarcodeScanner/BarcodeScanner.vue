@@ -18,7 +18,7 @@ const {
 const route = useRoute();
 const router = useRouter();
 
-const selectedBranch = computed(()=>{
+const selectedBranch = computed(() => {
   const branch = sessionStorage.getItem("selectedBranch");
   if (!branch) return null;
 
@@ -27,22 +27,24 @@ const selectedBranch = computed(()=>{
   } catch {
     return null;
   }
-})
+});
 
-onMounted(async ()=>{
-  if(route.query.autoStart =="1"){
-    await startScanner();
+onMounted(async () => {
+  if (route.query.autoStart == "1") {
+    setTimeout(()=>{
+await startScanner();
+    },500)
+    
   }
-})
+});
 
-function goBackToBranch(){
+function goBackToBranch() {
   stopScanner();
-  router.push('/')
+  router.push("/");
 }
 </script>
 <template>
   <div class="p-5">
-
     <div class="mb-4 flex gap-2">
       <button
         class="rounded-full bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm"
@@ -50,13 +52,6 @@ function goBackToBranch(){
       >
         ← Branches
       </button>
-      <!-- <button
-        class="rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700 disabled:opacity-50"
-        :disabled="isScanning"
-        @click="startScanner"
-      >
-        Bắt đầu quét
-      </button> -->
       <span
         v-if="selectedBranch"
         class="rounded-full bg-red-50 px-3 py-1 text-xs font-bold text-red-600"
@@ -77,7 +72,6 @@ function goBackToBranch(){
     <div
       v-if="showCamera"
       class="relative w-full overflow-hidden rounded-3xl bg-black shadow-lg"
-  style="aspect-ratio: 4 / 3"
     >
       <video
         ref="videoRef"
@@ -87,7 +81,9 @@ function goBackToBranch(){
         class="h-full w-full object-contain"
       ></video>
 
-      <div class="pointer-events-none absolute inset-0 flex items-center justify-center">
+      <div
+        class="pointer-events-none absolute inset-0 flex items-center justify-center"
+      >
         <div class="w-3/4 h-24 border-4 border-white rounded-xl"></div>
       </div>
     </div>
