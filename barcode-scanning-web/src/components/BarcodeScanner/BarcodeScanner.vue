@@ -16,13 +16,6 @@ const { videoRef,devices,showCamera, selectedDeviceId, result, isScanning,errorM
         Bắt đầu quét
       </button>
 
-      <button
-        class="rounded bg-red-500 px-4 py-2 font-bold text-white hover:bg-red-700 disabled:opacity-50"
-        :disabled="!isScanning"
-        @click="stopScanner"
-      >
-        Dừng
-      </button>
     </div>
 
     <div

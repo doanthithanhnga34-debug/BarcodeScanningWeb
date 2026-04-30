@@ -8,12 +8,13 @@
       </p>
     </div>
     <div
-      class="overflow-hidden rounded-3xl border border-slate-100 bg-white shadow-sm"
+      class="overflow-hidden rounded-3xl border border-slate-100 bg-white shadow-md"
     >
       <button
         v-for="branch in branches"
         :key="branch.id"
         class="flex w-full items-center gap-4 border-b border-slate-100 p-4 text-left transition last:border-b-0 hover:bg-slate-50 active:bg-slate-100"
+        @click="selectBranch(branch)"
       >
         <BranchSelectorCard :branch="branch" />
       </button>
@@ -22,6 +23,7 @@
 </template>
 
 <script setup>
+import {useRouter } from "vue-router";
 import BranchSelectorCard from "./BranchSelectorCard.vue";
 import BranchSelectorRecentCard from "./BranchSelectorRecentCard.vue";
 import { ref } from "vue";
@@ -43,4 +45,10 @@ const branches = ref([
     link: "",
   },
 ]);
+const router = useRouter();
+
+function selectBranch(branch) {
+  console.log("Selected branch:", branch);
+  router.push('/scanner');
+}
 </script>

@@ -4,16 +4,16 @@
           <span class="text-slate-400">
             <i class="pi pi-search" style="font-size: 1rem"></i>
           </span>
-
           <input
             v-model="search"
             type="text"
             placeholder="Search branch name or address"
-            class="w-full bg-transparent text-sm outline-none placeholder:text-slate-400"
-          />
+            class="w-full bg-transparent text-sm outline-none placeholder:text-slate-400"/>
         </div>
       </section>
 </template>
 <script setup>
+import { ref } from 'vue'
 
+const search = ref('')
 </script>
