@@ -11,7 +11,7 @@ export function useBarcodeScanner() {
   const selectedDeviceId = ref("");
   const showCamera = ref(false);
 
-  const result = ref("");
+  const result = ref(null);
   const isScanning = ref(false);
   const errorMessage = ref("");
   const capturedImage = ref(null);
@@ -19,8 +19,8 @@ export function useBarcodeScanner() {
   async function startScanner() {
     if (isScanning.value) return;
     try {
-      result.value="";
-      errorMessage.value=""
+      result.value = null;
+      errorMessage.value = "";
       showCamera.value = true;
       isScanning.value = true;
 
@@ -37,9 +37,8 @@ export function useBarcodeScanner() {
         "",
         (value) => {
           result.value = value;
-          saveToHistory(value);
-
-          stopScanner();
+          saveToHistory(value.text);
+          finishScanner();
         },
         (error) => {
           const ignoreErrors = [
@@ -61,6 +60,12 @@ export function useBarcodeScanner() {
       showCamera.value = false;
     }
   }
+
+  function finishScanner(){
+    stopZxingScanner();
+    isScanning.value=false;
+    showCamera.value=true;
+  }
   async function loadDevices() {
     try {
       const deviceList = await getVideoDevices();
@@ -75,9 +80,7 @@ export function useBarcodeScanner() {
         );
       });
 
-      selectedDeviceId.value =
-        backCamera?.deviceId ||
-        "";
+      selectedDeviceId.value = backCamera?.deviceId || "";
     } catch (error) {
       console.error(error);
     }
@@ -87,6 +90,7 @@ export function useBarcodeScanner() {
 
     isScanning.value = false;
     showCamera.value = false;
+    result.value=null
   }
 
   function saveToHistory(value) {
@@ -104,7 +108,6 @@ export function useBarcodeScanner() {
   onUnmounted(() => {
     stopScanner();
   });
-  
 
   return {
     videoRef,

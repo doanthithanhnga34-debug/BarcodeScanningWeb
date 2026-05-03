@@ -66,17 +66,18 @@ function goBackToBranch() {
       class="relative w-full h-[100vh] bg-black overflow-hidden"
     >
       <video
+       v-if="!result"
         ref="videoRef"
         autoplay
         muted
         playsinline
-        class="h-full w-full object-cover absolute top-0 left-0"
+        class="h-full w-full object-cover"
       />
 
       <img
-        v-if="result?.image"
+        v-else-if="result?.image"
         :src="result.image"
-        class="h-full w-full object-cover absolute top-0 left-0 blur-[2px] brightness-90"
+        class="h-full w-full object-cover blur-[2px] brightness-90"
       />
       <!-- <video
         v-if="!result"

@@ -40,13 +40,15 @@ export async function getVideoDevices() {
 }
 function captureFrame(video) {
   const canvas = document.createElement("canvas");
-  canvas.width = video.videoWidth;
-  canvas.height = video.videoHeight;
-
+  const width = video.videoWidth || video.clientWidth || 640;
+  const height = video.videoHeight || video.clientHeight || 480;
+ canvas.width = width;
+  canvas.height = height;
   const ctx = canvas.getContext("2d");
-  ctx.drawImage(video, 0, 0);
+  if (!ctx) return "";
+  ctx.drawImage(video, 0, 0, width, height);
 
-  return canvas.toDataURL("image/png");
+ return canvas.toDataURL("image/jpeg", 0.85);
 }
 export async function startZxingScanner(
   videoElement,
@@ -77,10 +79,7 @@ export async function startZxingScanner(
       width: { ideal: 640 },
       height: { ideal: 480 },
 
-      advanced: [
-      { focusMode: "continuous" },
-      { exposureMode: "continuous" }
-    ]
+      advanced: [{ focusMode: "continuous" }, { exposureMode: "continuous" }],
     },
     audio: false,
   };
@@ -92,13 +91,10 @@ export async function startZxingScanner(
         isResultLocked = true;
 
         const value = result.getText();
-        // scanControll.stop();
-        // controll = null;
-         const image = captureFrame(videoElement);
-        onResult(
-          { text:value,
-            image
-          });
+        const image = captureFrame(videoElement);
+        scanControll.stop();
+        controll = null;
+        onResult({ text: value, image });
         return;
       }
       const ignoredErrors = [
@@ -112,7 +108,7 @@ export async function startZxingScanner(
       }
     },
   );
-  await new Promise(res => setTimeout(res, 600));
+  await new Promise((res) => setTimeout(res, 600));
 }
 
 export function stopZxingScanner() {
