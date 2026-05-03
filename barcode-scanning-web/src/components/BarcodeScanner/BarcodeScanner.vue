@@ -52,10 +52,6 @@ function goBackToBranch() {
         @click="goBackToBranch"
       >
         <i class="pi pi-angle-left !text-xl text-white"></i>
-        <!-- <p>Scanner Barcode</p>
-      <button>
-
-      </button> -->
       </button>
       <span
         v-if="selectedBranch"
@@ -70,12 +66,15 @@ function goBackToBranch() {
       class="relative w-full h-[100vh] bg-black overflow-hidden"
     >
       <video
+        v-if="!result"
         ref="videoRef"
         autoplay
         muted
         playsinline
         class="h-full w-full object-cover"
       ></video>
+
+      <img v-else :src="result.image" class="h-full w-full object-cover blur-[2px] brightness-90" />
 
       <div
         class="pointer-events-none absolute inset-0 flex items-center justify-center"
@@ -112,7 +111,7 @@ function goBackToBranch() {
     </p>
   -->
 
-    <ScannerResult v-if="result" :result ="result" />
+    <ScannerResult v-if="result" :result="result.text" />
     <!-- <p v-else class="mt-2 text-gray-500">Chưa có mã nào được quét.</p> -->
   </div>
 </template>

@@ -12,6 +12,7 @@ import {
 let codeReader = null;
 let controll = null;
 let isResultLocked = false;
+let capturedImage = null;
 
 const PRODUCT_BARCODE_FORMATS = [
   BarcodeFormat.EAN_13,
@@ -36,7 +37,16 @@ export async function getVideoDevices() {
   const devices = await BrowserCodeReader.listVideoInputDevices();
   return devices;
 }
+function captureFrame(video) {
+  const canvas = document.createElement("canvas");
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
 
+  const ctx = canvas.getContext("2d");
+  ctx.drawImage(video, 0, 0);
+
+  return canvas.toDataURL("image/png");
+}
 export async function startZxingScanner(
   videoElement,
   deviceId,
@@ -83,7 +93,11 @@ export async function startZxingScanner(
         const value = result.getText();
         // scanControll.stop();
         // controll = null;
-        onResult(value);
+         const image = captureFrame(videoElement);
+        onResult(
+          { text:value,
+            image
+          });
         return;
       }
       const ignoredErrors = [

@@ -14,6 +14,7 @@ export function useBarcodeScanner() {
   const result = ref("");
   const isScanning = ref(false);
   const errorMessage = ref("");
+  const capturedImage = ref(null);
 
   async function startScanner() {
     if (isScanning.value) return;
@@ -103,6 +104,7 @@ export function useBarcodeScanner() {
   onUnmounted(() => {
     stopScanner();
   });
+  
 
   return {
     videoRef,
