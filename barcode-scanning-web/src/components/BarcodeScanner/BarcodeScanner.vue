@@ -112,7 +112,7 @@ function goBackToBranch() {
     </p>
   -->
 
-    <ScannerResult v-if="result" />
+    <ScannerResult v-if="result" :result ="result" />
     <!-- <p v-else class="mt-2 text-gray-500">Chưa có mã nào được quét.</p> -->
   </div>
 </template>
