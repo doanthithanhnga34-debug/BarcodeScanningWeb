@@ -66,6 +66,19 @@ function goBackToBranch() {
       class="relative w-full h-[100vh] bg-black overflow-hidden"
     >
       <video
+        ref="videoRef"
+        autoplay
+        muted
+        playsinline
+        class="h-full w-full object-cover absolute top-0 left-0"
+      />
+
+      <img
+        v-if="result?.image"
+        :src="result.image"
+        class="h-full w-full object-cover absolute top-0 left-0 blur-[2px] brightness-90"
+      />
+      <!-- <video
         v-if="!result"
         ref="videoRef"
         autoplay
@@ -74,7 +87,11 @@ function goBackToBranch() {
         class="h-full w-full object-cover"
       ></video>
 
-      <img v-else :src="result.image" class="h-full w-full object-cover blur-[2px] brightness-90" />
+      <img
+        v-if="result?.image"
+        :src="result.image"
+        class="h-full w-full object-cover absolute top-0 left-0 blur-[1px] brightness-75 transition duration-300"
+      /> -->
 
       <div
         class="pointer-events-none absolute inset-0 flex items-center justify-center"

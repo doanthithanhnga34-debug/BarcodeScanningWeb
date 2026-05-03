@@ -2,6 +2,7 @@ import {
   BrowserCodeReader,
   BrowserMultiFormatOneDReader,
 } from "@zxing/browser";
+import { ref } from "vue";
 import {
   BarcodeFormat,
   ChecksumException,
@@ -12,7 +13,7 @@ import {
 let codeReader = null;
 let controll = null;
 let isResultLocked = false;
-let capturedImage = null;
+let capturedImage = ref(null);
 
 const PRODUCT_BARCODE_FORMATS = [
   BarcodeFormat.EAN_13,
