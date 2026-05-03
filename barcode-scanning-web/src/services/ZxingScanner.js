@@ -81,8 +81,8 @@ export async function startZxingScanner(
         isResultLocked = true;
 
         const value = result.getText();
-        scanControll.stop();
-        controll = null;
+        // scanControll.stop();
+        // controll = null;
         onResult(value);
         return;
       }
