@@ -31,6 +31,16 @@ p {
   margin: 0;
 }
 
+.icon-active{
+  font-size:2rem !important;
+  color:var(--color-primary);
+}
+
+.box-active{
+  border-radius:2px;
+  border: 1px solid #333;
+}
+
 code,
 .counter {
   font-family: var(--mono);
@@ -75,4 +85,17 @@ code {
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
+}
+
+.fadeInUp{
+  animation:fadeInUp 1s ease-out ;
+}
+@keyframes fadeInUp {
+    from{
+      opacity:0;
+      transform: translateY(30px);
+    }to{
+      opacity:1;
+      transform: translateY(0);
+    }
 }

@@ -6,7 +6,8 @@
       <div
         class="w-10 h-10 md:w-12 md:h-12 bg-red-50 rounded-xl flex items-center justify-center shrink-0"
       >
-        <img :src="locationIcon" alt="" class="w-6 h-6 md:w-7 md:h-7" />
+        <!-- <img :src="locationIcon" alt="" class="w-6 h-6 md:w-7 md:h-7" /> -->
+         <i class="pi pi-map-marker"></i>
       </div>
       <div>
         <p class="font-semibold text-base md:text-lg truncate">

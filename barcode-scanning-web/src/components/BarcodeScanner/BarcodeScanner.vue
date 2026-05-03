@@ -2,6 +2,8 @@
 import { useBarcodeScanner } from "../../composables/useBarcodeScanner";
 import { computed, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
+import ScannerControl from "./ScannerControl.vue";
+import ScannerResult from "./ScannerResult.vue";
 const {
   videoRef,
   devices,
@@ -31,10 +33,7 @@ const selectedBranch = computed(() => {
 
 onMounted(async () => {
   if (route.query.autoStart == "1") {
-    setTimeout(()=>{
-await startScanner();
-    },500)
-    
+    await startScanner();
   }
 });
 
@@ -44,13 +43,19 @@ function goBackToBranch() {
 }
 </script>
 <template>
-  <div class="p-5">
-    <div class="mb-4 flex gap-2">
+  <div class="h-screen overflow-hidden flex flex-col">
+    <div
+      class="flex w-full bg-transparent absolute top-0 left-0 right-0 p-4 z-50"
+    >
       <button
-        class="rounded-full bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm"
+        class="w-12 h-12 flex items-center justify-center rounded-full bg-black/10"
         @click="goBackToBranch"
       >
-        ← Branches
+        <i class="pi pi-angle-left !text-xl text-white"></i>
+        <!-- <p>Scanner Barcode</p>
+      <button>
+
+      </button> -->
       </button>
       <span
         v-if="selectedBranch"
@@ -59,42 +64,55 @@ function goBackToBranch() {
         {{ selectedBranch.name }}
       </span>
     </div>
-    <div class="mb-5">
-      <h2 class="text-2xl font-extrabold text-slate-950">
-        Scan mã hàng sản phẩm
-      </h2>
-
-      <p class="mt-1 text-sm text-slate-500">
-        Đưa mã vạch sản phẩm vào khung để quét.
-      </p>
-    </div>
 
     <div
       v-if="showCamera"
-      class="relative w-full overflow-hidden rounded-3xl bg-black shadow-lg"
+      class="relative w-full h-[100vh] bg-black overflow-hidden"
     >
       <video
         ref="videoRef"
         autoplay
         muted
         playsinline
-        class="h-full w-full object-contain"
+        class="h-full w-full object-cover"
       ></video>
 
       <div
         class="pointer-events-none absolute inset-0 flex items-center justify-center"
       >
-        <div class="w-3/4 h-24 border-4 border-white rounded-xl"></div>
+        <div class="relative w-3/4 h-28">
+          <!-- TL -->
+          <div
+            class="absolute top-0 left-0 w-6 h-6 border-t-4 border-l-4 border-white"
+          ></div>
+
+          <!-- TR -->
+          <div
+            class="absolute top-0 right-0 w-6 h-6 border-t-4 border-r-4 border-white"
+          ></div>
+
+          <!-- BL -->
+          <div
+            class="absolute bottom-0 left-0 w-6 h-6 border-b-4 border-l-4 border-white"
+          ></div>
+
+          <!-- BR -->
+          <div
+            class="absolute bottom-0 right-0 w-6 h-6 border-b-4 border-r-4 border-white"
+          ></div>
+        </div>
       </div>
     </div>
 
-    <p
+    <!-- <p
       v-if="result"
       class="mt-2 break-all rounded bg-gray-100 p-3 text-lg font-semibold"
     >
       {{ result }}
     </p>
+  -->
 
-    <p v-else class="mt-2 text-gray-500">Chưa có mã nào được quét.</p>
+    <ScannerResult v-if="result" />
+    <!-- <p v-else class="mt-2 text-gray-500">Chưa có mã nào được quét.</p> -->
   </div>
 </template>

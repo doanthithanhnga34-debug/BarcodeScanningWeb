@@ -16,7 +16,8 @@
         <div
           class="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-red-50 text-3xl"
         >
-          <img :src="storeIcon" alt="" />
+          <!-- <img :src="storeIcon" alt="" /> -->
+           <i class="pi pi-shop text-red-900"></i>
         </div>
 
             <div class="min-w-0 flex-1">
@@ -31,7 +32,8 @@
             </div>
 
             <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-amber-50 text-lg">
-              ⭐
+              <!-- ⭐ -->
+               <i class="pi pi-star-fill text-yellow-500"></i>
             </div>
       </div>
     </button>

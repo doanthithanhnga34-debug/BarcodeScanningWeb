@@ -1,5 +1,7 @@
 <template>
-  <BarcodeScanner />
+  <div class="bg-transparent">
+    <BarcodeScanner />
+  </div>
 </template>
 
 <script setup>
