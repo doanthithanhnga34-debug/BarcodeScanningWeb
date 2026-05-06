@@ -78,8 +78,8 @@ const branches = ref([
 const router = useRouter();
 
 function selectBranch(branch) {
-  console.log("Selected branch:", branch);
-  sessionStorage.setItem("selectedBranch", branch);
+  sessionStorage.setItem("selectedBranch", branch.name);
+  console.log("Selected branch:",  branch.name);
 
   router.push({
     path:'/scanner',

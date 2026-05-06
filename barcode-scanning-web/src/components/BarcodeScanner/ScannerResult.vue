@@ -17,8 +17,6 @@
       <p v-else class="text-sm text-red-500 font-bold">
         {{ errorMessage || "Không tìm thấy sản phẩm" }}
       </p>
-      <p class="text-xs text-gray-400">{{ barcode }}</p>
-
       <button class="flex items-center justify-center bg-black p-4 rounded-4xl">
         <i class="pi pi-plus text-white"></i>
       </button>
@@ -60,15 +58,6 @@ const productName = computed(() => {
   );
 });
 
-const productPrice = computed(() => {
-  return (
-    props.product?.price ||
-    props.product?.gia ||
-    props.product?.["Giá"] ||
-    props.product?.["gia_ban"] ||
-    ""
-  );
-});
 
 function addProduct() {
   if (!props.product) return;

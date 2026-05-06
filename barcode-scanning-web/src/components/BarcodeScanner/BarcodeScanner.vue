@@ -4,7 +4,13 @@ import { computed, onMounted, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import ScannerControl from "./ScannerControl.vue";
 import ScannerResult from "./ScannerResult.vue";
-import { findProductById } from "../../services/appScriptService";
+import Loading from "../Common/Loading.vue";
+
+import {
+  findProductById,
+  getAllProducts,
+} from "../../services/appScriptService";
+
 const {
   videoRef,
   devices,
@@ -22,57 +28,97 @@ const {
 const route = useRoute();
 const router = useRouter();
 const product = ref(null);
+const productMap = ref({});
+const isPreloading = ref(true);
 const isLoadingProduct = ref(false);
 const productError = ref("");
 
 const selectedBranch = computed(() => {
   const branch = sessionStorage.getItem("selectedBranch");
-  if (!branch) return null;
 
-  try {
-    return JSON.parse(branch);
-  } catch {
-    return null;
-  }
-  console.log(selectedBranch)
+  return branch || null;
 });
 
 onMounted(async () => {
+  if (!selectedBranch.value) {
+    router.push("/");
+    return;
+  }
+
   if (route.query.autoStart == "1") {
     await startScanner();
+  }
+
+  try {
+    console.log("🚀 Preloading products...");
+
+    productMap.value = await getAllProducts(selectedBranch.value);
+
+    console.log("✅ Preload xong:", productMap.value);
+  } catch (err) {
+    console.error("❌ Lỗi preload:", err);
+  } finally {
+    isPreloading.value = false;
   }
 });
 
 watch(
   () => result.value?.text,
   async (barcode) => {
+    console.log("📌 Barcode scan:", barcode);
     product.value = null;
     productError.value = "";
 
-    if (!barcode) return;
-
-    isLoadingProduct.value = true;
-    if (!selectedBranch.value) {
-      productError.value = "Chưa chọn chi nhánh";
+    if (!barcode) {
       return;
     }
+
     isLoadingProduct.value = true;
-
     try {
-      const foundProduct = await findProductById(barcode, selectedBranch.value.name);
+      const cleanBarcode = barcode.trim();
+      const found = productMap.value[cleanBarcode];
+      if (found) {
+        product.value = found;
+      } else {
+        const apiProduct = await findProductById(
+          cleanBarcode,
+          selectedBranch.value,
+        );
+        if (apiProduct) {
+          product.value = apiProduct;
 
-      if (!foundProduct) {
-        productError.value = "Không tìm thấy sản phẩm trong Google Sheet";
-        return;
+          productMap.value[cleanBarcode] = apiProduct;
+        } else {
+          productError.value = "Không tìm thấy sản phẩm";
+        }
       }
-
-      product.value = foundProduct;
-    } catch (error) {
-      console.error(error);
-      productError.value = "Không thể lấy thông tin sản phẩm";
     } finally {
       isLoadingProduct.value = false;
     }
+
+    console.log(product.value);
+
+    // try {
+    //   console.log("🚀 Gọi API...");
+    //   const cleanBarcode = barcode.trim();
+    //   const foundProduct = await findProductById(
+    //     cleanBarcode,
+    //     selectedBranch.value,
+    //   );
+
+    //   console.log("✅ API trả về:", foundProduct);
+    //   if (!foundProduct) {
+    //     productError.value = "Không tìm thấy sản phẩm trong Google Sheet";
+    //     return;
+    //   }
+    //   product.value = foundProduct;
+    // } catch (error) {
+    //   console.error(error);
+    //   productError.value = "Không thể lấy thông tin sản phẩm";
+    // } finally {
+    //   isLoadingProduct.value = false;
+    //   isFetching = false;
+    // }
   },
 );
 
@@ -87,9 +133,16 @@ async function scanAgainBarcode() {
 }
 </script>
 <template>
+  <!-- <div
+    v-if="isPreloading"
+    class="h-screen overflow-hidden flex items-center justify-center"
+  >
+    <Loading></Loading>
+  </div> -->
+
   <div class="h-screen overflow-hidden flex flex-col">
     <div
-      class="flex w-full justify-between bg-transparent absolute top-0 left-0 right-0 p-4 z-50"
+      class="flex w-full items-center justify-between bg-transparent absolute top-0 left-0 right-0 p-4 z-50"
     >
       <button
         class="w-12 h-12 flex items-center justify-center rounded-full bg-black/10"
@@ -99,9 +152,9 @@ async function scanAgainBarcode() {
       </button>
       <span
         v-if="selectedBranch"
-        class="rounded-full bg-red-50 px-3 py-1 text-xs font-bold text-red-600"
+        class="rounded-full bg-black/10 px-3 py-2 text-xs font-semibold text-white"
       >
-        {{ selectedBranch.name }}
+        {{ selectedBranch }}
       </span>
       <button
         class="w-12 h-12 flex items-center justify-center rounded-full bg-black/10"
@@ -112,7 +165,7 @@ async function scanAgainBarcode() {
     </div>
 
     <div
-      v-if="showCamera"
+      v-if="showCamera "
       class="relative w-full h-[100vh] bg-black overflow-hidden"
     >
       <video
@@ -156,7 +209,7 @@ async function scanAgainBarcode() {
         </div>
       </div>
     </div>
-<p
+    <p
       v-if="errorMessage"
       class="absolute left-4 right-4 top-20 z-50 rounded-2xl bg-red-50 p-3 text-sm font-bold text-red-600"
     >

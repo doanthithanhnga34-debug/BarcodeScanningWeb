@@ -40,15 +40,15 @@ export async function getVideoDevices() {
 }
 function captureFrame(video) {
   const canvas = document.createElement("canvas");
-  const width = video.videoWidth || video.clientWidth || 640;
-  const height = video.videoHeight || video.clientHeight || 480;
+  const width = video.videoWidth || video.clientWidth || 1280;
+  const height = video.videoHeight || video.clientHeight || 720;
   canvas.width = width;
   canvas.height = height;
   const ctx = canvas.getContext("2d");
   if (!ctx) return "";
   ctx.drawImage(video, 0, 0, width, height);
 
-  return canvas.toDataURL("image/jpeg", 0.85);
+  return canvas.toDataURL("image/jpeg", 1.0);
 }
 export async function startZxingScanner(
   videoElement,
@@ -76,8 +76,8 @@ export async function startZxingScanner(
       //   ? { deviceId: { exact: deviceId } }
       facingMode: { ideal: "environment" },
 
-      width: { ideal: 640 },
-      height: { ideal: 480 },
+      width: { ideal: 1280},
+      height: { ideal: 720 },
 
       advanced: [{ focusMode: "continuous" }, { exposureMode: "continuous" }],
     },
