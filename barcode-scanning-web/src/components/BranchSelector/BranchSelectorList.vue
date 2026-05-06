@@ -31,12 +31,12 @@ import { ref } from "vue";
 const branches = ref([
   {
     id: 1,
-    name: "Trương Hoàng Thanh",
+    name: "Quận 10",
     link: "",
   },
   {
     id: 2,
-    name: "Hoàng Thùy Linh",
+    name: "Huỳnh Thiện Lộc",
     link: "",
   },
   {
@@ -46,17 +46,32 @@ const branches = ref([
   },
    {
     id: 4,
-    name: "Đặng Văn Bi",
+    name: "Cần Thơ",
     link: "",
   },
    {
     id: 5,
-    name: "Đặng Văn Bi",
+    name: "Buôn Ma Thuộc",
     link: "",
   },
    {
     id: 6,
-    name: "Đặng Văn Bi",
+    name: "Lê Quang Định",
+    link: "",
+  },
+   {
+    id: 6,
+    name: "Đoàn Hồng Phước",
+    link: "",
+  },
+   {
+    id: 6,
+    name: "Lê Văn Thọ",
+    link: "",
+  },
+   {
+    id: 6,
+    name: "Nguyễn Thị Định",
     link: "",
   },
 ]);

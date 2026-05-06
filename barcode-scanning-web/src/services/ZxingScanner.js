@@ -11,7 +11,7 @@ import {
 } from "@zxing/library";
 
 let codeReader = null;
-let controll = null;
+let controls = null;
 let isResultLocked = false;
 let capturedImage = ref(null);
 
@@ -42,13 +42,13 @@ function captureFrame(video) {
   const canvas = document.createElement("canvas");
   const width = video.videoWidth || video.clientWidth || 640;
   const height = video.videoHeight || video.clientHeight || 480;
- canvas.width = width;
+  canvas.width = width;
   canvas.height = height;
   const ctx = canvas.getContext("2d");
   if (!ctx) return "";
   ctx.drawImage(video, 0, 0, width, height);
 
- return canvas.toDataURL("image/jpeg", 0.85);
+  return canvas.toDataURL("image/jpeg", 0.85);
 }
 export async function startZxingScanner(
   videoElement,
@@ -83,17 +83,17 @@ export async function startZxingScanner(
     },
     audio: false,
   };
-  controll = await codeReader.decodeFromConstraints(
+  controls = await codeReader.decodeFromConstraints(
     constraints,
     videoElement,
-    (result, error, scanControll) => {
+    (result, error, scanControls) => {
       if (result && !isResultLocked) {
         isResultLocked = true;
 
         const value = result.getText();
         const image = captureFrame(videoElement);
-        scanControll.stop();
-        controll = null;
+        scanControls.stop();
+        controls = null;
         onResult({ text: value, image });
         return;
       }
@@ -112,10 +112,12 @@ export async function startZxingScanner(
 }
 
 export function stopZxingScanner() {
-  if (controll && typeof controll.stop === "function") {
-    controll.stop();
+  if (controls && typeof controls.stop === "function") {
+    controls.stop();
   }
-  controll = null;
+  controls = null;
   codeReader = null;
   isResultLocked = false;
 }
+
+

@@ -61,11 +61,6 @@ export function useBarcodeScanner() {
     }
   }
 
-  function finishScanner(){
-    stopZxingScanner();
-    isScanning.value=false;
-    showCamera.value=true;
-  }
   async function loadDevices() {
     try {
       const deviceList = await getVideoDevices();
@@ -85,12 +80,27 @@ export function useBarcodeScanner() {
       console.error(error);
     }
   }
+
+  async function scanAgain() {
+    if (isScanning.value) return;
+    stopZxingScanner();
+    result.value = null;
+    errorMessage.value = "";
+    showCamera.value = true;
+    isScanning.value = false;
+    await nextTick();
+    await startScanner();
+  }
+  function finishScanner() {
+    stopZxingScanner();
+    isScanning.value = false;
+    showCamera.value = true;
+  }
   function stopScanner() {
     stopZxingScanner();
-
     isScanning.value = false;
     showCamera.value = false;
-    result.value=null
+    result.value = null;
   }
 
   function saveToHistory(value) {
@@ -120,5 +130,6 @@ export function useBarcodeScanner() {
     startScanner,
     stopScanner,
     loadDevices,
+    scanAgain
   };
 }
