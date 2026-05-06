@@ -14,6 +14,11 @@
       <p v-else-if="product" class="text-sm text-gray-500 font-bold">
         {{ productName }}
       </p>
+      <p v-else class="text-sm text-red-500 font-bold">
+        {{ errorMessage || "Không tìm thấy sản phẩm" }}
+      </p>
+      <p class="text-xs text-gray-400">{{ barcode }}</p>
+
       <button class="flex items-center justify-center bg-black p-4 rounded-4xl">
         <i class="pi pi-plus text-white"></i>
       </button>
