@@ -4,12 +4,17 @@
     <div class="mb-3">
       <p class="text-left text-sm font-bold text-slate-500">
         All Branches
-        <span class="text-slate-400"> (24) </span>
+        <span class="text-slate-400"> ({{ totalBranches}}) </span>
       </p>
     </div>
+
     <div
-      class="overflow-hidden rounded-3xl border border-slate-100 bg-white shadow-md"
+      class="h-[400px] overflow-y-auto scrollbar-thin overflow-x-hidden rounded-lg border border-slate-100 card"
     >
+      <div v-if="!branches.length" class="h-full w-full flex items-center justify-center">
+        <p>No data found</p>
+      </div>
+
       <button
         v-for="branch in branches"
         :key="branch.id"
@@ -23,70 +28,36 @@
 </template>
 
 <script setup>
-import {useRouter } from "vue-router";
+import { useRouter } from "vue-router";
 import BranchSelectorCard from "./BranchSelectorCard.vue";
-import BranchSelectorRecentCard from "./BranchSelectorRecentCard.vue";
-import { ref } from "vue";
+import BranchSelectorRecentCard from "./RecentBranchSelectorCard.vue";
+import { computed, ref } from "vue";
+import { saveRecentBranch } from "../../utils/recentBranches";
 
-const branches = ref([
-  {
-    id: 1,
-    name: "Quận 10",
-    link: "",
+
+const selectedBranch = ref();
+defineProps({
+  branches: {
+    type: Array,
+    required: true,
+  },totalBranches: {
+    type: Number,
+    required: true,
   },
-  {
-    id: 2,
-    name: "Huỳnh Thiện Lộc",
-    link: "",
-  },
-  {
-    id: 3,
-    name: "Đặng Văn Bi",
-    link: "",
-  },
-   {
-    id: 4,
-    name: "Cần Thơ",
-    link: "",
-  },
-   {
-    id: 5,
-    name: "Buôn Ma Thuộc",
-    link: "",
-  },
-   {
-    id: 6,
-    name: "Lê Quang Định",
-    link: "",
-  },
-   {
-    id: 6,
-    name: "Đoàn Hồng Phước",
-    link: "",
-  },
-   {
-    id: 6,
-    name: "Lê Văn Thọ",
-    link: "",
-  },
-   {
-    id: 6,
-    name: "Nguyễn Thị Định",
-    link: "",
-  },
-]);
+});
+
 const router = useRouter();
 
 function selectBranch(branch) {
+  saveRecentBranch(branch)
   sessionStorage.setItem("selectedBranch", branch.name);
-  console.log("Selected branch:",  branch.name);
-
+  console.log("Selected branch:", branch.name);
   router.push({
-    path:'/scanner',
-    query:{
-      autoStart:"1",
-      branchId : branch.id
-    }
+    path: "/scanner",
+    query: {
+      autoStart: "1",
+      branchId: branch.id,
+    },
   });
 }
 </script>

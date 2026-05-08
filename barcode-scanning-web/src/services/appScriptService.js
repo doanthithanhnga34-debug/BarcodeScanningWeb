@@ -21,3 +21,19 @@ export async function getAllProducts(branch){
 
   return data
 }
+
+export async function saveExpiryToSheet(payload){
+  const response =  await fetch(PRODUCT_API_URL,{
+    method:"POST",
+    headers:{
+      "Content-Type": "text/plain;charset=utf-8",
+    },
+    body:JSON.stringify(payload)
+  })
+  const data = await response.json();
+  if(!data.success){
+    throw new Error(data.message|| "Can't be saved")
+  }
+  console.log(response);
+  return data;
+}

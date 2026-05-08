@@ -13,31 +13,35 @@ h1 {
   font-size: 56px;
   letter-spacing: -1.68px;
   margin: 32px 0;
+
   @media (max-width: 1024px) {
     font-size: 36px;
     margin: 20px 0;
   }
 }
+
 h2 {
   font-size: 24px;
   line-height: 118%;
   letter-spacing: -0.24px;
   margin: 0 0 8px;
+
   @media (max-width: 1024px) {
     font-size: 20px;
   }
 }
+
 p {
   margin: 0;
 }
 
-.icon-active{
-  font-size:2rem !important;
-  color:var(--color-primary);
+.icon-active {
+  font-size: 2rem !important;
+  color: var(--color-primary);
 }
 
-.box-active{
-  border-radius:2px;
+.box-active {
+  border-radius: 2px;
   border: 1px solid #333;
 }
 
@@ -69,6 +73,7 @@ code {
   &:hover {
     border-color: var(--accent-border);
   }
+
   &:focus-visible {
     outline: 2px solid var(--accent);
     outline-offset: 2px;
@@ -87,15 +92,74 @@ code {
   box-sizing: border-box;
 }
 
-.fadeInUp{
-  animation:fadeInUp 1s ease-out ;
+.fadeInUp {
+  animation: fadeInUp 1s ease-out;
 }
+
 @keyframes fadeInUp {
-    from{
-      opacity:0;
-      transform: translateY(30px);
-    }to{
-      opacity:1;
-      transform: translateY(0);
-    }
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.bg-primary {
+  background-color: var(--background-primary);
+}
+
+.screen {
+  background: linear-gradient(180deg,
+      #FCFCFE 0%,
+      #F9F7FF 45%,
+      #F2F0FC 100%);
+}
+
+.text-color {
+  color: var(--text-primary)
+}
+
+.card {
+  background: #FDFDFF;
+  border-radius: 24px;
+  box-shadow:
+    0 20px 45px rgba(130, 122, 235, 0.12),
+    0 4px 12px rgba(80, 70, 140, 0.06);
+}
+
+.icon-box {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: #F0EDFF;
+  box-shadow: 0 8px 18px rgba(91, 94, 247, 0.08);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-box i {
+  font-size: 22px;
+  color: var(--primary-color);
+}
+
+.card.border-top {
+  border-top: 2px solid var(--primary-color);
+}
+
+.button {
+  background: linear-gradient(90deg,
+      #5148F3 0%,
+      #6A3FF4 50%,
+      #8736F4 100%);
+  border-radius: 11px;
+  box-shadow:
+    0 8px 18px rgba(99, 72, 243, 0.22),
+    0 2px 6px rgba(80, 60, 180, 0.12);
+  color: #FFFFFF;
 }

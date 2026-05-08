@@ -1,32 +1,45 @@
 <template>
   <div class="absolute left-4 right-4 bottom-20 fadeInUp">
-    <div
-      class="flex justify-around items-center rounded-3xl bg-white px-2 py-6 text-black shadow-lg z-50"
-    >
-      <div
-        class="flex items-center justify-center bg-amber-300 w-20 h-20 rounded-xl"
-      >
-        <i class="pi pi-image"></i>
+    <div class="card border-top rounded-3xl bg-white px-3 py-6 text-black shadow-lg z-50">
+      <div class="flex justify-around items-center gap-3">
+        <div
+          class="flex icon-box items-center justify-centerw-20 h-20 rounded-xl bg-primary"
+        >
+          <i class="pi pi-image"></i>
+        </div>
+        <p v-if="loading" class="mt-1 text-sm font-bold text-gray-500">
+          Đang lấy thông tin...
+        </p>
+        <p v-else-if="product" class="text-sm text-gray-500 font-bold">
+          {{ productName }}
+        </p>
+        <p v-else class="text-sm text-red-500 font-bold">
+          {{ errorMessage || "Không tìm thấy sản phẩm" }}
+        </p>
+        <button
+          class="flex items-center justify-center bg-black p-4 rounded-4xl"
+          @click="isShowModal"
+        >
+          <i class="pi pi-plus text-white"></i>
+        </button>
       </div>
-      <p v-if="loading" class="mt-1 text-sm font-bold text-gray-500">
-        Đang lấy thông tin...
-      </p>
-      <p v-else-if="product" class="text-sm text-gray-500 font-bold">
-        {{ productName }}
-      </p>
-      <p v-else class="text-sm text-red-500 font-bold">
-        {{ errorMessage || "Không tìm thấy sản phẩm" }}
-      </p>
-      <button class="flex items-center justify-center bg-black p-4 rounded-4xl">
-        <i class="pi pi-plus text-white"></i>
-      </button>
-      <!-- <p class="mt-1 break-all text-lg font-bold">{{ result }}</p> -->
     </div>
   </div>
+  <ExpiryForm
+    v-if="isShowExpiryForm"
+    :barcode="barcode"
+    :productName="productName"
+    @close="isShowExpiryForm = false"
+    @save="handleSave"
+    @scan-again="handleScanAgain"
+  />
 </template>
 
 <script setup>
-import { computed } from "vue";
+import { computed, ref } from "vue";
+import ExpiryForm from "./ExpiryForm.vue";
+
+
 const props = defineProps({
   barcode: {
     type: String,
@@ -45,7 +58,7 @@ const props = defineProps({
     default: "",
   },
 });
-const emit = defineEmits(["scan-again", "add-product"]);
+const emit = defineEmits(["scan-again", "add-product", "save-product"]);
 
 const productName = computed(() => {
   return (
@@ -58,10 +71,18 @@ const productName = computed(() => {
   );
 });
 
+const isShowExpiryForm = ref(false);
 
-function addProduct() {
-  if (!props.product) return;
+function isShowModal() {
+  isShowExpiryForm.value = true;
+}
 
-  emit("add-product", props.product);
+function handleSave(data) {
+  console.log("saveData", data);
+  emit("save-product", data);
+}
+function handleScanAgain() {
+  isShowExpiryForm.value = false;
+  emit("scan-again");
 }
 </script>

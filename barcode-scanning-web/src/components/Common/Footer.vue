@@ -1,4 +1,4 @@
 <template>
-  <div class="h-10">Thanh Nga</div>
+  <div class="h-10"></div>
 </template>
 <script setup></script>

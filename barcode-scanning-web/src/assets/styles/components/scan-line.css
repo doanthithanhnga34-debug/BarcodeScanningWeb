@@ -1,0 +1,33 @@
+.scan-line {
+  position: absolute;
+  width: 100%;
+  height: 2px;
+
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--primary-color),
+    transparent
+  );
+
+  filter: drop-shadow(0 0 8px var(--primary-color));
+
+  animation: scanner 1.8s ease-in-out infinite;
+}
+
+@keyframes scanner {
+  0% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(110px);
+  }
+
+  100% {
+    transform: translateY(0);
+  }
+}
+
+
+

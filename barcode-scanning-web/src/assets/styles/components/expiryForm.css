@@ -1,0 +1,22 @@
+.animate-slideUp {
+  animation: slideUp 0.25s ease;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+  }
+
+  to {
+    transform: translateY(0);
+  }
+}
+.expiry-input.p-inputtext:enabled:focus,
+.expiry-input.p-inputmask:enabled:focus {
+  border-color: var(--primary-color) !important;
+  box-shadow: 0 0 0 2px rgba(221, 214, 254, 1) !important;
+  outline: none !important;
+}
+.expiry-input{
+  box-shadow : var(--box-shadow);
+}

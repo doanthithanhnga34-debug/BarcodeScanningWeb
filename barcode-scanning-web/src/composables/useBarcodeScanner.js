@@ -30,8 +30,6 @@ export function useBarcodeScanner() {
         throw new Error("Không tìm thấy camera view");
       }
 
-      // await loadDevices();
-
       await startZxingScanner(
         videoRef.value,
         "",
