@@ -3,7 +3,7 @@
       class="sticky inset-x-0 top-0 z-10 border-b border-slate-100 bg-white/90 px-5 py-4 backdrop-blur"
     >
       <div class="flex items-center justify-between md:px-4 md:py-2">
-        <div class="flex items-center gap-3 min-w-0">
+        <div @click="refreshPage" class="flex items-center gap-3 min-w-0">
           <img
             src="../../assets/image/logo_teobokki.png"
             alt="logo tteokbokki"
@@ -20,3 +20,5 @@
       </div>
     </header>
   </template>
+  <script setup>
+</script>

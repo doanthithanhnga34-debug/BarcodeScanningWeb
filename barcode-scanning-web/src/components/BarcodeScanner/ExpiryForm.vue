@@ -73,6 +73,8 @@ import { ref, computed } from "vue";
 import InputMask from "primevue/inputmask";
 import { saveExpiryToSheet } from "../../services/appScriptService";
 import { useToast } from "primevue/usetoast";
+import { addOfflineExpiryQueue } from "../../services/offlineExpiryQueue";
+import { syncOfflineExpiryQueue } from "../../services/offlineExpirySync";
 
 const toast = useToast();
 const props = defineProps({
@@ -141,8 +143,21 @@ async function handleSave() {
       productName: props.productName,
       expiryDate: expiryDate.value,
     };
+    if(!navigator.onLine){
+      addOfflineExpiryQueue(payload);
+      toast.add({
+        severity:"warn",
+        summary:"Đã lưu tạm",
+        detail:"Bạn đã mất mạng. Dữ liệu sẽ đồng bộ khi có mạng lại",
+        life:3000
+      })
+    emit("save", payload);
 
-    // isLoading = true;
+      setTimeout(() => {
+        emit("close");
+      }, 500);
+      return;
+    }
 
     const result = await saveExpiryToSheet(payload);
 
@@ -160,8 +175,23 @@ async function handleSave() {
     setTimeout(() => {
       emit("close");
     }, 500);
+    emit("scan-again");
   } catch (error) {
     console.error(error);
+
+    addOfflineExpiryQueue(payload);
+
+    toast.add({
+      severity: "warn",
+      summary: "Đã lưu tạm",
+      detail: "Không thể kết nối server. Dữ liệu sẽ tự đồng bộ lại sau.",
+      life: 3500,
+    });
+    emit("save", payload);
+    setTimeout(() => {
+      emit("close");
+    }, 500);
+
     errorMessage.value = error.message || "Failed Saved";
     toast.add({
       severity: "error",
