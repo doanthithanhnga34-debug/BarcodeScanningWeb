@@ -60,8 +60,8 @@
         @click="handleSave"
         :disabled="isSaving"
       >
-      {{ isSaving ? "Saving..." : "Save" }}
-      <i v-if="isSaving" class="pi pi-spin pi-spinner"></i>
+        {{ isSaving ? "Saving..." : "Save" }}
+        <i v-if="isSaving" class="pi pi-spin pi-spinner"></i>
       </button>
 
       <!-- scan again -->
@@ -142,14 +142,13 @@ async function handleSave() {
   }
   isSaving.value = true;
   errorMessage.value = "";
-
+  const payload = {
+    branchName: selectedBranch.value,
+    barcode: props.barcode,
+    productName: props.productName,
+    expiryDate: expiryDate.value,
+  };
   try {
-    const payload = {
-      branchName: selectedBranch.value,
-      barcode: props.barcode,
-      productName: props.productName,
-      expiryDate: expiryDate.value,
-    };
     if (!navigator.onLine) {
       addOfflineExpiryQueue(payload);
       toast.add({
