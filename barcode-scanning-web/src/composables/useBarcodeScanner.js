@@ -48,7 +48,7 @@ export function useBarcodeScanner() {
           if (ignoreErrors.includes(error?.name)) return;
 
           console.error(error);
-          errorMessage.value = "Không thể quét mã hàng";
+          // errorMessage.value = "Không thể quét mã hàng";
         },
       );
     } catch (err) {
