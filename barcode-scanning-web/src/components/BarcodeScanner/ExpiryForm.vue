@@ -4,31 +4,41 @@
     class="fixed inset-0 z-[999] flex items-end bg-black/40 backdrop-blur-sm"
     @click.self="closeModal"
   >
-    <div class="w-full rounded-t-[32px] bg-white p-6 animate-slideUp">
+    <div
+      class="sm:max-w-md sm:rounded-[32px] sm:p-6 max-h-[90dvh] w-full rounded-t-[32px] bg-white p-5 animate-slideUp"
+    >
       <div class="mb-4 flex justify-center">
         <div class="h-1.5 w-16 rounded-full bg-gray-300"></div>
       </div>
       <!-- title -->
-      <h2 class="text-center text-xl font-bold">Product Info</h2>
+      <h2 class="text-center text-xl font-bold sm:text-2xl">Product Info</h2>
       <div class="mt-6 flex flex-col gap-2">
-        <p class="mb-2 text-left text-xs font-bold text-gray-400 text-ellipsis">
+        <p
+          class="mb-2 text-left text-xs font-bold tracking-wide text-gray-400 text-ellipsis"
+        >
           Product Name
         </p>
 
-        <div class="rounded-2xl bg-violet-50 p-4 text-color font-bold">
+        <div
+          class="sm:text-base text-sm rounded-2xl bg-violet-50 p-4 text-color font-bold"
+        >
           {{ productName }}
         </div>
       </div>
       <div class="mt-6 flex flex-col gap-2">
-        <p class="mb-2 text-left text-xs font-bold text-gray-400">Barcode</p>
+        <p class="mb-2 text-left tracking-wide text-xs font-bold text-gray-400">
+          Barcode
+        </p>
 
-        <div class="rounded-2xl bg-violet-50 p-4 text-color font-bold">
+        <div
+          class="sm:text-base break-all rounded-2xl text-sm bg-violet-50 p-4 text-color font-bold"
+        >
           {{ barcode }}
         </div>
       </div>
       <!-- expiry -->
       <div class="mt-6 flex flex-col gap-2">
-        <p class="mb-2 text-left text-xs font-bold text-gray-400">
+        <p class="mb-2 text-left text-xs font-bold tracking-wide text-gray-400">
           Expiry Date
         </p>
 
@@ -40,30 +50,29 @@
           class="expiry-input w-full"
           required
         />
-        <p
-        v-if="errorMessage"
-        class="mt-3 text-center text-sm text-red-500"
-      >
-        {{ errorMessage }}
-      </p>
+        <p v-if="errorMessage" class="mt-2 text-center text-sm text-red-500">
+          {{ errorMessage }}
+        </p>
       </div>
       <!-- save -->
       <button
-        class="mt-8 w-full rounded-2xl py-4 font-bold text-white button border-color"
+        class="flex items-center justify-center gap-2 mt-8 w-full rounded-2xl py-4 font-bold text-white button border-color transition active:scale-[0.98]"
         @click="handleSave"
         :disabled="isSaving"
       >
-        {{ isSaving ? "Saving..." : "Save" }}
+
+      
+      {{ isSaving ? "Saving..." : "Save" }}
+      <i v-if="isSaving" class="pi pi-spin pi-spinner"></i>
       </button>
 
       <!-- scan again -->
       <button
         @click="scanAgainBarcode"
-        class="mt-4 w-full rounded-2xl border border-gray-200 py-4 font-bold text-color"
+        class="mt-4 w-full rounded-2xl border border-gray-200 py-4 font-bold text-color transition active:scale-[0.98]"
       >
         Scan Again
       </button>
-      
     </div>
   </div>
 </template>
@@ -143,15 +152,16 @@ async function handleSave() {
       productName: props.productName,
       expiryDate: expiryDate.value,
     };
-    if(!navigator.onLine){
+    if (!navigator.onLine) {
       addOfflineExpiryQueue(payload);
       toast.add({
-        severity:"warn",
-        summary:"Saved temporarily",
-        detail:"Internet connection lost. Data will sync when the internet is restored.",
-        life:3000
-      })
-    emit("save", payload);
+        severity: "warn",
+        summary: "Saved temporarily",
+        detail:
+          "Internet connection lost. Data will sync when the internet is restored.",
+        life: 3000,
+      });
+      emit("save", payload);
 
       setTimeout(() => {
         emit("close");
@@ -163,11 +173,11 @@ async function handleSave() {
 
     toast.add({
       severity: "success",
-      summary: "Saved Successfully",
+      summary: "Success!",
       detail:
         result.action === "updated"
-          ? "The product's expiration date has been updated."
-          : "The product has been added.",
+          ? "Updated expiry date successfully."
+          : "Added successfully",
       life: 2500,
     });
 
@@ -184,7 +194,8 @@ async function handleSave() {
     toast.add({
       severity: "warn",
       summary: "Saved temporarily",
-      detail: "Unable to connect to the server. Data will resynchronize automatically later.",
+      detail:
+        "Unable to connect to the server. Data will resynchronize automatically later.",
       life: 3500,
     });
     emit("save", payload);
@@ -204,7 +215,7 @@ async function handleSave() {
   }
 }
 
-async function scanAgainBarcode(){
+async function scanAgainBarcode() {
   emit("scan-again");
   emit("close");
 }
