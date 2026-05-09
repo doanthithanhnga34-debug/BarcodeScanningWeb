@@ -1,6 +1,8 @@
 <template>
   <div class="absolute left-4 right-4 bottom-20 fadeInUp">
-    <div class="card border-top rounded-3xl bg-white px-3 py-6 text-black shadow-lg z-50">
+    <div
+      class="card border-top rounded-3xl bg-white px-3 py-6 text-black shadow-lg z-50"
+    >
       <div class="flex justify-around items-center gap-3">
         <div
           class="flex icon-box items-center justify-centerw-20 h-20 rounded-xl bg-primary"
@@ -25,20 +27,21 @@
       </div>
     </div>
   </div>
-  <ExpiryForm
-    v-if="isShowExpiryForm"
-    :barcode="barcode"
-    :productName="productName"
-    @close="isShowExpiryForm = false"
-    @save="handleSave"
-    @scan-again="handleScanAgain"
-  />
+  <Transition name="modal">
+    <ExpiryForm
+      v-if="isShowExpiryForm"
+      :barcode="barcode"
+      :productName="productName"
+      @close="isShowExpiryForm = false"
+      @save="handleSave"
+      @scan-again="handleScanAgain"
+    />
+  </Transition>
 </template>
 
 <script setup>
 import { computed, ref } from "vue";
 import ExpiryForm from "./ExpiryForm.vue";
-
 
 const props = defineProps({
   barcode: {

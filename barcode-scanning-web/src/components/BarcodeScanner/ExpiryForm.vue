@@ -60,8 +60,6 @@
         @click="handleSave"
         :disabled="isSaving"
       >
-
-      
       {{ isSaving ? "Saving..." : "Save" }}
       <i v-if="isSaving" class="pi pi-spin pi-spinner"></i>
       </button>
