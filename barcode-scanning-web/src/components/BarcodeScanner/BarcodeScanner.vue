@@ -186,7 +186,7 @@ async function scanAgainBarcode() {
       <img
         v-else-if="result?.image"
         :src="result.image"
-        class="h-full w-full object-cover blur-[2px] brightness-90"
+        class="h-full w-full object-cover"
       />
 
       <div
