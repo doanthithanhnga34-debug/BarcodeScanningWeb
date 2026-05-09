@@ -16,13 +16,18 @@ export function useBarcodeScanner() {
   const errorMessage = ref("");
   const capturedImage = ref(null);
 
+  const scannerStarted = ref(false);
+  const scanLocked = ref(false);
+
   async function startScanner() {
+    if (scannerStarted.value) return;
     if (isScanning.value) return;
     try {
       result.value = null;
       errorMessage.value = "";
       showCamera.value = true;
       isScanning.value = true;
+      scanLocked.value = false;
 
       await nextTick();
 
@@ -34,6 +39,8 @@ export function useBarcodeScanner() {
         videoRef.value,
         "",
         (value) => {
+          if (scanLocked.value) return;
+          scanLocked.value = true;
           result.value = value;
           saveToHistory(value.text);
           finishScanner();
@@ -51,11 +58,13 @@ export function useBarcodeScanner() {
           // errorMessage.value = "Unable to scan barcode";
         },
       );
+       scannerStarted.value = true;
     } catch (err) {
       console.error(err);
       errorMessage.value = err.message || "Unable to open camera";
       isScanning.value = false;
       showCamera.value = false;
+      scannerStarted.value = false;
     }
   }
 
@@ -80,17 +89,20 @@ export function useBarcodeScanner() {
   }
 
   async function scanAgain() {
-    if (isScanning.value) return;
-    stopZxingScanner();
+    // if (isScanning.value) return;
+    // stopZxingScanner();
     result.value = null;
     errorMessage.value = "";
     showCamera.value = true;
-    isScanning.value = false;
+    scanLocked.value = false;
+    isScanning.value = true;
     await nextTick();
-    await startScanner();
+    if (!scannerStarted.value) {
+      await startScanner();
+    }
   }
   function finishScanner() {
-    stopZxingScanner();
+    // stopZxingScanner();
     isScanning.value = false;
     showCamera.value = true;
   }
@@ -99,6 +111,8 @@ export function useBarcodeScanner() {
     isScanning.value = false;
     showCamera.value = false;
     result.value = null;
+    scannerStarted.value = false;
+    scanLocked.value = false;
   }
 
   function saveToHistory(value) {
@@ -128,6 +142,6 @@ export function useBarcodeScanner() {
     startScanner,
     stopScanner,
     loadDevices,
-    scanAgain
+    scanAgain,
   };
 }
