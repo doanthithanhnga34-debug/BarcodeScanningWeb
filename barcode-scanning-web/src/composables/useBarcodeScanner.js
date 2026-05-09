@@ -3,6 +3,7 @@ import {
   getVideoDevices,
   startZxingScanner,
   stopZxingScanner,
+  unlockZxingScanner
 } from "../services/ZxingScanner";
 
 export function useBarcodeScanner() {
@@ -96,6 +97,8 @@ export function useBarcodeScanner() {
     showCamera.value = true;
     scanLocked.value = false;
     isScanning.value = true;
+
+     unlockZxingScanner();
     await nextTick();
     if (!scannerStarted.value) {
       await startScanner();

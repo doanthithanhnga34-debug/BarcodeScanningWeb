@@ -50,6 +50,9 @@ function captureFrame(video) {
 
   return canvas.toDataURL("image/jpeg", 1.0);
 }
+export function unlockZxingScanner() {
+  isResultLocked = false;
+}
 export async function startZxingScanner(
   videoElement,
   deviceId,
@@ -57,9 +60,13 @@ export async function startZxingScanner(
   onError,
 ) {
   if (!videoElement) {
-    throw new Error("Video element chưa sẵn sàng");
+    throw new Error("Video element is not ready");
   }
-  stopZxingScanner();
+  if (controls) {
+    unlockZxingScanner();
+    return;
+  }
+  // stopZxingScanner();
   isResultLocked = false;
 
   const hints = new Map();
@@ -92,8 +99,8 @@ export async function startZxingScanner(
 
         const value = result.getText();
         const image = captureFrame(videoElement);
-        scanControls.stop();
-        controls = null;
+        // scanControls.stop();
+        // controls = null;
         onResult({ text: value, image });
         return;
       }
