@@ -37,7 +37,7 @@ export function useBarcodeScanner() {
 
       await startZxingScanner(
         videoRef.value,
-        "",
+         selectedDeviceId.value || "",
         (value) => {
           if (scanLocked.value) return;
           scanLocked.value = true;

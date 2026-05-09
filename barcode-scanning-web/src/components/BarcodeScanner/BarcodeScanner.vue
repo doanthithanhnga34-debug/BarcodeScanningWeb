@@ -175,7 +175,7 @@ async function scanAgainBarcode() {
       class="relative w-full h-[100vh] bg-black overflow-hidden"
     >
       <video
-        v-if="!result"
+        
         ref="videoRef"
         autoplay
         muted
@@ -184,7 +184,7 @@ async function scanAgainBarcode() {
       />
 
       <img
-        v-else-if="result?.image"
+        v-if="result?.image"
         :src="result.image"
         class="h-full w-full object-cover"
       />
