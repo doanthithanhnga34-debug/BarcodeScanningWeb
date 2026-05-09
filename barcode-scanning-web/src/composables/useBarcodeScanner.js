@@ -27,7 +27,7 @@ export function useBarcodeScanner() {
       await nextTick();
 
       if (!videoRef.value) {
-        throw new Error("Không tìm thấy camera view");
+        throw new Error("Camera view not found");
       }
 
       await startZxingScanner(
@@ -48,12 +48,12 @@ export function useBarcodeScanner() {
           if (ignoreErrors.includes(error?.name)) return;
 
           console.error(error);
-          // errorMessage.value = "Không thể quét mã hàng";
+          // errorMessage.value = "Unable to scan barcode";
         },
       );
     } catch (err) {
       console.error(err);
-      errorMessage.value = err.message || "Không thể mở camera";
+      errorMessage.value = err.message || "Unable to open camera";
       isScanning.value = false;
       showCamera.value = false;
     }

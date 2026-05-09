@@ -130,7 +130,7 @@ async function handleSave() {
   }
 
   if (!selectedBranch.value) {
-    errorMessage.value = "Không tìm thấy chi nhánh đã chọn";
+    errorMessage.value = "The selected branch was not found.";
     return;
   }
   isSaving.value = true;
@@ -147,8 +147,8 @@ async function handleSave() {
       addOfflineExpiryQueue(payload);
       toast.add({
         severity:"warn",
-        summary:"Đã lưu tạm",
-        detail:"Bạn đã mất mạng. Dữ liệu sẽ đồng bộ khi có mạng lại",
+        summary:"Saved temporarily",
+        detail:"Internet connection lost. Data will sync when the internet is restored.",
         life:3000
       })
     emit("save", payload);
@@ -163,11 +163,11 @@ async function handleSave() {
 
     toast.add({
       severity: "success",
-      summary: "Lưu thành công",
+      summary: "Saved Successfully",
       detail:
         result.action === "updated"
-          ? "Sản phẩm đã được cập nhật hạn sử dụng"
-          : "Sản phẩm đã được thêm vào Google Sheet",
+          ? "The product's expiration date has been updated."
+          : "The product has been added.",
       life: 2500,
     });
 
@@ -183,8 +183,8 @@ async function handleSave() {
 
     toast.add({
       severity: "warn",
-      summary: "Đã lưu tạm",
-      detail: "Không thể kết nối server. Dữ liệu sẽ tự đồng bộ lại sau.",
+      summary: "Saved temporarily",
+      detail: "Unable to connect to the server. Data will resynchronize automatically later.",
       life: 3500,
     });
     emit("save", payload);
@@ -192,11 +192,11 @@ async function handleSave() {
       emit("close");
     }, 500);
 
-    errorMessage.value = error.message || "Failed Saved";
+    errorMessage.value = error.message || " Save Failed";
     toast.add({
       severity: "error",
       summary: "Lưu thất bại",
-      detail: error.message || "Không thể lưu dữ liệu",
+      detail: error.message || "Save failed ",
       life: 3000,
     });
   } finally {

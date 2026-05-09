@@ -102,7 +102,7 @@ watch(
 
           productMap.value[cleanBarcode] = apiProduct;
         } else {
-          productError.value = "Không tìm thấy sản phẩm";
+          productError.value = "No product found.";
         }
       }
     } finally {
