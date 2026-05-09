@@ -22,6 +22,7 @@ const {
   stopScanner,
   loadDevices,
   scanAgain,
+  capturedImage
 } = useBarcodeScanner();
 
 const route = useRoute();
@@ -184,9 +185,9 @@ async function scanAgainBarcode() {
       />
 
       <img
-        v-if="result?.image"
-        :src="result.image"
-        class="h-full w-full object-cover"
+        v-if="capturedImage"
+        :src="capturedImage"
+        class="absolute inset-0 h-full w-full object-cover"
       />
 
       <div

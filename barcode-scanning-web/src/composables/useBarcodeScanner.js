@@ -3,7 +3,7 @@ import {
   getVideoDevices,
   startZxingScanner,
   stopZxingScanner,
-  unlockZxingScanner
+  unlockZxingScanner,
 } from "../services/ZxingScanner";
 
 export function useBarcodeScanner() {
@@ -38,11 +38,12 @@ export function useBarcodeScanner() {
 
       await startZxingScanner(
         videoRef.value,
-         selectedDeviceId.value || "",
+        selectedDeviceId.value || "",
         (value) => {
           if (scanLocked.value) return;
           scanLocked.value = true;
           result.value = value;
+          capturedImage.value = value.image || null;
           saveToHistory(value.text);
           finishScanner();
         },
@@ -59,7 +60,7 @@ export function useBarcodeScanner() {
           // errorMessage.value = "Unable to scan barcode";
         },
       );
-       scannerStarted.value = true;
+      scannerStarted.value = true;
     } catch (err) {
       console.error(err);
       errorMessage.value = err.message || "Unable to open camera";
@@ -94,11 +95,12 @@ export function useBarcodeScanner() {
     // stopZxingScanner();
     result.value = null;
     errorMessage.value = "";
+    capturedImage.value = null;
     showCamera.value = true;
     scanLocked.value = false;
     isScanning.value = true;
 
-     unlockZxingScanner();
+    unlockZxingScanner();
     await nextTick();
     if (!scannerStarted.value) {
       await startScanner();
@@ -114,6 +116,7 @@ export function useBarcodeScanner() {
     isScanning.value = false;
     showCamera.value = false;
     result.value = null;
+    capturedImage.value = null;
     scannerStarted.value = false;
     scanLocked.value = false;
   }
@@ -146,5 +149,6 @@ export function useBarcodeScanner() {
     stopScanner,
     loadDevices,
     scanAgain,
+    capturedImage,
   };
 }
