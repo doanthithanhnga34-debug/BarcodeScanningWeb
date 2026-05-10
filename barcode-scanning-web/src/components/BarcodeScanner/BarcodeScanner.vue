@@ -32,7 +32,7 @@ const productMap = ref({});
 const isPreloading = ref(true);
 const isLoadingProduct = ref(false);
 const productError = ref("");
-const MIN_LOADING_TIME = 2000;
+const MIN_LOADING_TIME = 3000;
 const isProductPreloaded = ref(false);
 
 const selectedBranch = computed(() => {
