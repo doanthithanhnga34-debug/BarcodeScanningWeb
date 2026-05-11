@@ -32,10 +32,10 @@ const productMap = ref({});
 const isPreloading = ref(true);
 const isLoadingProduct = ref(false);
 const productError = ref("");
-const MIN_LOADING_TIME = 3000;
+const MIN_LOADING_TIME = 5000;
 const isProductPreloaded = ref(false);
 
-const selectedBranch = computed(() => {
+const selectedBranch = computed(() => { 
   const branch = sessionStorage.getItem("selectedBranch");
 
   return branch || null;
@@ -53,26 +53,31 @@ onMounted(async () => {
 
   isPreloading.value = true;
 
-  console.log("Preloading products...");
-  getAllProducts(selectedBranch.value)
-    .then((products) => {
-      productMap.value = products;
-      isProductPreloaded.value = true;
-      console.log("Preload xong", productMap.value);
-    })
-    .catch((err) => {
-      console.error("Lỗi preload:", err);
-      isProductPreloaded.value = false;
-    });
+  try {
+    const products = await getAllProducts(selectedBranch.value);
+
+    productMap.value = products;
+
+    isProductPreloaded.value = true;
+
+    console.log("Preload:" ,productMap.value);
+    console.log(
+      "Preload xong",
+      Object.keys(productMap.value).length,
+    );
 
     await nextTick();
-  if (route.query.autoStart === "1") {
-    await startScanner().catch((err) => {
-      console.error("Lỗi start scanner:", err);
-    });
+
+    if (route.query.autoStart === "1") {
+      await startScanner();
+    }
+  } catch (err) {
+    console.error("Lỗi preload:", err);
+
+    isProductPreloaded.value = false;
+  } finally {
+    isPreloading.value = false;
   }
-  await delay(MIN_LOADING_TIME);
-  isPreloading.value = false;
 });
 
 watch(

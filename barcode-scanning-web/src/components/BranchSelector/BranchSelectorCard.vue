@@ -6,7 +6,6 @@
       <div
         class="w-10 h-10 md:w-12 md:h-12 icon-box shrink-0"
       >
-        <!-- <img :src="locationIcon" alt="" class="w-6 h-6 md:w-7 md:h-7" /> -->
          <i class="pi pi-map-marker"></i>
       </div>
       <div>
@@ -20,8 +19,6 @@
   </div>
 </template>
 <script setup>
-import locationIcon from "../../assets/image/locationsvg.svg";
-import locationIcon2 from "../../assets/image/locationsvg2.svg";
 defineProps({
   branch: Object,
 });

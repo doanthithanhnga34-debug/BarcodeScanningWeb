@@ -4,7 +4,7 @@ import BranchSelectionPage from "./BranchSelectionPage.vue";
 </script>
 
 <template>
-  <div class="min-h-screen bg-slate-50 text-slate-900">
+  <div class="min-h-screen screen-bg text-slate-900">
     <Header />
     <BranchSelectionPage />
   </div>

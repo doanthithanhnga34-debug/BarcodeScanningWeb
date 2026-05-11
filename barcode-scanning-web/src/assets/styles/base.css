@@ -118,6 +118,18 @@ code {
       #F9F7FF 45%,
       #F2F0FC 100%);
 }
+.screen-bg {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 20% 5%, rgba(130, 122, 235, 0.22), transparent 28%),
+    radial-gradient(circle at 90% 20%, rgba(7, 94, 219, 0.14), transparent 26%),
+    linear-gradient(
+      180deg,
+      #EEF3FF 0%,
+      #F4F1FF 42%,
+      #FAF9FF 100%
+    );
+}
 
 .text-color {
   color: var(--text-primary)
@@ -130,6 +142,13 @@ code {
     0 20px 45px rgba(130, 122, 235, 0.12),
     0 4px 12px rgba(80, 70, 140, 0.06);
 }
+
+.card_box-shadow{
+   box-shadow:
+    0 20px 45px rgba(130, 122, 235, 0.12),
+    0 4px 12px rgba(80, 70, 140, 0.06);
+}
+
 
 .icon-box {
   width: 52px;
@@ -162,4 +181,14 @@ code {
     0 8px 18px rgba(99, 72, 243, 0.22),
     0 2px 6px rgba(80, 60, 180, 0.12);
   color: #FFFFFF;
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.22);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(255, 255, 255, 0.38);
+  box-shadow:
+    0 20px 45px rgba(79, 70, 229, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.45);
 }

@@ -11,4 +11,13 @@ export default defineConfig({
       "@": fileURLToPath(new URL("./src", import.meta.url)),
     },
   },
+   server: {
+    proxy: {
+      "/gas": {
+        target: "https://script.google.com",
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/gas/, ""),
+      },
+    },
+  },
 });

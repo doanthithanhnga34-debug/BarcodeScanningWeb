@@ -53,11 +53,11 @@ function selectBranch(branch) {
   sessionStorage.setItem("selectedBranch", branch.name);
   console.log("Selected branch:", branch.name);
   router.push({
-    path: "/scanner",
-    query: {
-      autoStart: "1",
-      branchId: branch.id,
-    },
+    path: "/action",
+    // query: {
+    //   autoStart: "1",
+    //   branchId: branch.id,
+    // },
   });
 }
 </script>
