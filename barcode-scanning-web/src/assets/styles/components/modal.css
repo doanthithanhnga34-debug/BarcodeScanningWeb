@@ -1,0 +1,19 @@
+.modal-enter-active,
+.modal-leave-active {
+  transition: all 0.5s ease;
+}
+
+.modal-enter-from,
+.modal-leave-to {
+  opacity: 0;
+}
+
+.modal-enter-from > div,
+.modal-leave-to > div {
+  transform: translateY(100%);
+}
+
+.modal-enter-to > div,
+.modal-leave-from > div {
+  transform: translateY(0);
+}

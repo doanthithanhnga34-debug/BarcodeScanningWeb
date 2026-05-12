@@ -93,7 +93,7 @@ code {
 }
 
 .fadeInUp {
-  animation: fadeInUp 1s ease-out;
+  animation: fadeInUp .3s ease-out;
 }
 
 @keyframes fadeInUp {
@@ -108,6 +108,20 @@ code {
   }
 }
 
+.fadeOutDown{
+  animation:fadeOutDown .3s ease-in;
+}
+
+@keyframes fadeOutDown{
+  from {
+    opacity:1;
+    transform: translateY(0)
+  }
+  to{
+    opacity:0;
+    transform:translateY(30px)
+  }
+}
 .bg-primary {
   background-color: var(--background-primary);
 }

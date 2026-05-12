@@ -7,4 +7,5 @@
 @import './components/loading.css';
 @import './components/scan-line.css';
 @import './components/expiryForm.css';
+@import './components/modal.css';
 @import './pages/branchSelection.css';

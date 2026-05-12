@@ -2,7 +2,6 @@
 import { useBarcodeScanner } from "../../composables/useBarcodeScanner";
 import { computed, onMounted, ref, watch, nextTick } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import ScannerControl from "./ScannerControl.vue";
 import ScannerResult from "./ScannerResult.vue";
 import Loading from "../Common/Loading.vue";
 import {
@@ -23,7 +22,7 @@ const {
   stopScanner,
   loadDevices,
   scanAgain,
-  capturedImage
+  capturedImage,
 } = useBarcodeScanner();
 
 const route = useRoute();
@@ -36,7 +35,7 @@ const productError = ref("");
 const MIN_LOADING_TIME = 5000;
 const isProductPreloaded = ref(false);
 
-const selectedBranch = computed(() => { 
+const selectedBranch = computed(() => {
   const branch = sessionStorage.getItem("selectedBranch");
 
   return branch || null;
@@ -56,25 +55,27 @@ onMounted(async () => {
 
   const cachedProducts = getProductCache(selectedBranch.value);
 
-  if(cachedProducts){
-    productMap.value = cachedProducts
-    isPreloading.value=true;
+  if (cachedProducts) {
+    productMap.value = cachedProducts;
+    isPreloading.value = true;
     console.log("Preload product from cache");
   }
-  getAllProducts(selectedBranch.value).then((products)=>{
-    productMap.value = products;
-    setProductCache(selectedBranch.value, products);
-    isProductPreloaded.value = true;
+  getAllProducts(selectedBranch.value)
+    .then((products) => {
+      productMap.value = products;
+      setProductCache(selectedBranch.value, products);
+      isProductPreloaded.value = true;
       console.log("Product cache refreshed");
-  }).catch((err)=>{
-    console.log("Lỗi Preload", err);
-    isProductPreloaded.value= Boolean(cachedProducts);
-  })
+    })
+    .catch((err) => {
+      console.log("Lỗi Preload", err);
+      isProductPreloaded.value = Boolean(cachedProducts);
+    });
 
   await nextTick();
 
-  if(route.query.autoStart ==="1"){
-     await startScanner().catch((err) => {
+  if (route.query.autoStart === "1") {
+    await startScanner().catch((err) => {
       console.error("Lỗi start scanner:", err);
     });
   }
@@ -116,36 +117,13 @@ watch(
     } finally {
       isLoadingProduct.value = false;
     }
-
     console.log(product.value);
-
-    // try {
-    //   console.log("Gọi API...");
-    //   const cleanBarcode = barcode.trim();
-    //   const foundProduct = await findProductById(
-    //     cleanBarcode,
-    //     selectedBranch.value,
-    //   );
-
-    //   console.log("API trả về:", foundProduct);
-    //   if (!foundProduct) {
-    //     productError.value = "Không tìm thấy sản phẩm trong Google Sheet";
-    //     return;
-    //   }
-    //   product.value = foundProduct;
-    // } catch (error) {
-    //   console.error(error);
-    //   productError.value = "Không thể lấy thông tin sản phẩm";
-    // } finally {
-    //   isLoadingProduct.value = false;
-    //   isFetching = false;
-    // }
   },
 );
 
 function goBackToBranch() {
   stopScanner();
-  router.push("/");
+  router.back();
 }
 async function scanAgainBarcode() {
   product.value = null;
@@ -154,7 +132,7 @@ async function scanAgainBarcode() {
 }
 </script>
 <template>
-  <div class="h-screen overflow-hidden flex flex-col">
+  <div class="min-h-dvh overflow-hidden flex flex-col">
     <div
       class="flex w-full items-center justify-between bg-transparent absolute top-0 left-0 right-0 p-4 z-50"
     >
@@ -166,7 +144,7 @@ async function scanAgainBarcode() {
       </button>
       <span
         v-if="selectedBranch"
-        class="rounded-full bg-black/10 px-3 py-2 text-xs font-semibold text-white"
+        class="max-w-[140px] truncate rounded-full bg-black/10 px-3 py-2 text-xs font-semibold text-white"
       >
         {{ selectedBranch }}
       </span>
@@ -180,10 +158,9 @@ async function scanAgainBarcode() {
 
     <div
       v-if="showCamera"
-      class="relative w-full h-[100vh] bg-black overflow-hidden"
+      class="relative w-full h-dvh bg-black overflow-hidden"
     >
       <video
-        
         ref="videoRef"
         autoplay
         muted
@@ -244,12 +221,12 @@ async function scanAgainBarcode() {
       :error-message="productError"
       @scan-again="scanAgainBarcode"
     />
-
+    
     <div
       v-if="isPreloading"
       class="absolute inset-0 z-[999] flex items-center justify-center bg-[#F9F7FF]"
     >
-      <Loading></Loading>
+    <Loading v-if="isPreloading"></Loading>
     </div>
   </div>
 </template>

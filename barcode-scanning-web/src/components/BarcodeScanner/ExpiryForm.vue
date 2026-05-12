@@ -1,78 +1,82 @@
-# Scanner Expiry Modal (Vue + Tailwind + PrimeVue) ```vue
 <template>
-  <div
-    class="fixed inset-0 z-[999] flex items-end bg-black/40 backdrop-blur-sm"
-    @click.self="closeModal"
-  >
+
     <div
-      class="sm:max-w-md sm:rounded-[32px] sm:p-6 max-h-[90dvh] w-full rounded-t-[32px] bg-white p-5 animate-slideUp"
+      class="fixed inset-0 z-[999] flex items-end bg-black/40 backdrop-blur-sm"
+      @click.self="closeModal"
     >
-      <div class="mb-4 flex justify-center">
-        <div class="h-1.5 w-16 rounded-full bg-gray-300"></div>
-      </div>
-      <!-- title -->
-      <h2 class="text-center text-xl font-bold sm:text-2xl">Product Info</h2>
-      <div class="mt-6 flex flex-col gap-2">
-        <p
-          class="mb-2 text-left text-xs font-bold tracking-wide text-gray-400 text-ellipsis"
-        >
-          Product Name
-        </p>
-
-        <div
-          class="sm:text-base text-sm rounded-2xl bg-violet-50 p-4 text-color font-bold"
-        >
-          {{ productName }}
-        </div>
-      </div>
-      <div class="mt-6 flex flex-col gap-2">
-        <p class="mb-2 text-left tracking-wide text-xs font-bold text-gray-400">
-          Barcode
-        </p>
-
-        <div
-          class="sm:text-base break-all rounded-2xl text-sm bg-violet-50 p-4 text-color font-bold"
-        >
-          {{ barcode }}
-        </div>
-      </div>
-      <!-- expiry -->
-      <div class="mt-6 flex flex-col gap-2">
-        <p class="mb-2 text-left text-xs font-bold tracking-wide text-gray-400">
-          Expiry Date
-        </p>
-
-        <InputMask
-          v-model="expiryDate"
-          mask="99/99/9999"
-          placeholder="DD/MM/YYYY"
-          inputmode="numeric"
-          class="expiry-input w-full"
-          required
-        />
-        <p v-if="errorMessage" class="mt-2 text-center text-sm text-red-500">
-          {{ errorMessage }}
-        </p>
-      </div>
-      <!-- save -->
-      <button
-        class="flex items-center justify-center gap-2 mt-8 w-full rounded-2xl py-4 font-bold text-white button border-color transition active:scale-[0.98]"
-        @click="handleSave"
-        :disabled="isSaving"
+      <div
+        class="sm:max-w-md sm:rounded-[32px] sm:p-6 max-h-[90dvh] w-full rounded-t-[32px] bg-white p-5 animate-slideUp"
       >
-        {{ isSaving ? "Saving..." : "Save" }}
-        <i v-if="isSaving" class="pi pi-spin pi-spinner"></i>
-      </button>
+        <div class="mb-4 flex justify-center">
+          <div class="h-1.5 w-16 rounded-full bg-gray-300"></div>
+        </div>
+        <!-- title -->
+        <h2 class="text-center text-xl font-bold sm:text-2xl">Product Info</h2>
+        <div class="mt-6 flex flex-col gap-2">
+          <p
+            class="mb-2 text-left text-xs font-bold tracking-wide text-gray-400 text-ellipsis"
+          >
+            Product Name
+          </p>
 
-      <!-- scan again -->
-      <button
-        @click="scanAgainBarcode"
-        class="mt-4 w-full rounded-2xl border border-gray-200 py-4 font-bold text-color transition active:scale-[0.98]"
-      >
-        Scan Again
-      </button>
+          <div
+            class="sm:text-base text-sm rounded-2xl bg-violet-50 p-4 text-color font-bold"
+          >
+            {{ productName }}
+          </div>
+        </div>
+        <div class="mt-6 flex flex-col gap-2">
+          <p
+            class="mb-2 text-left tracking-wide text-xs font-bold text-gray-400"
+          >
+            Barcode
+          </p>
+
+          <div
+            class="sm:text-base break-all rounded-2xl text-sm bg-violet-50 p-4 text-color font-bold"
+          >
+            {{ barcode }}
+          </div>
+        </div>
+        <!-- expiry -->
+        <div class="mt-6 flex flex-col gap-2">
+          <p
+            class="mb-2 text-left text-xs font-bold tracking-wide text-gray-400"
+          >
+            Expiry Date
+          </p>
+
+          <InputMask
+            v-model="expiryDate"
+            mask="99/99/9999"
+            placeholder="DD/MM/YYYY"
+            inputmode="numeric"
+            class="expiry-input w-full"
+            required
+          />
+          <p v-if="errorMessage" class="mt-2 text-center text-sm text-red-500">
+            {{ errorMessage }}
+          </p>
+        </div>
+        <!-- save -->
+        <button
+          class="flex items-center justify-center gap-2 mt-8 w-full rounded-2xl py-4 font-bold text-white button border-color transition active:scale-[0.98]"
+          @click="handleSave"
+          :disabled="isSaving"
+        >
+          {{ isSaving ? "Saving..." : "Save" }}
+          <i v-if="isSaving" class="pi pi-spin pi-spinner"></i>
+        </button>
+
+        <!-- scan again -->
+        <button
+          @click="scanAgainBarcode"
+          class="mt-4 w-full rounded-2xl border border-gray-200 py-4 font-bold text-color transition active:scale-[0.98]"
+        >
+          Scan Again
+        </button>
+      </div>
     </div>
-  </div>
 </template>
 
 <script setup>

@@ -1,11 +1,11 @@
 <template>
   <Loading v-if="isInitializing"  />
-  <template v-else>
+  <div v-else class="h-dvh overflow-hidden screen-bg">
     <Nav />
-    <div class="min-h-screen px-4 pb-8 pt-6 screen-bg">
-      <div class="mb-5 flex justify-start">
+    <div class="flex h-full flex-col px-4 pb-8 pt-2">
+      <div class="mb-2 flex justify-start">
         <div
-          class="inline-flex items-center gap-2 h-[28px] mt-5 ml-3 p-4 glass-card rounded-lg mb-3 shadow-2xs"
+          class="inline-flex items-center gap-2 h-[28px] mt-2 ml-3 p-4 glass-card rounded-lg mb-3 shadow-2xs"
         >
           <i class="pi pi-shop text-color"></i>
           <span>Chi nhánh {{ selectedBranch }}</span>
@@ -56,7 +56,7 @@
         </div>
       </div>
     </div>
-  </template>
+  </div>
 </template>
 
 <script setup>
