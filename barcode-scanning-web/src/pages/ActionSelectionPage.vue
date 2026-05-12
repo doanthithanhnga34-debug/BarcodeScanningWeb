@@ -1,6 +1,6 @@
 <template>
   <Nav/>
-  <div class="screen-bg">
+  <div class="min-h-screen px-4 pb-8 pt-6 screen-bg ">
     <div class="mb-5 flex justify-start">
       <div
         class="inline-flex items-center gap-2 h-[28px] mt-5 ml-3 p-4 glass-card rounded-lg mb-3 shadow-2xs"
@@ -10,8 +10,8 @@
       </div>
     </div>
 
-    <div class="flex flex-col gap-5 items-center">
-      <div @click="click" class="relative bg-[#827aeb] w-90 rounded-2xl card_box-shadow transition-all duration-200 ease-out
+    <div class="mx-auto flex w-full max-w-md flex-col gap-5 items-center">
+      <div @click="navigateToScanner" class="relative bg-[#827aeb] w-full max-w-[360px] rounded-2xl card_box-shadow transition-all duration-200 ease-out
     active:scale-95">
         <div class="flex flex-col items-center px-4 py-9 gap-4">
           <div class="p-4 glass-card rounded-xl">
@@ -22,7 +22,7 @@
           </div>
 
           <h2 class="!text-white">Quét Barcode</h2>
-          <p class="text-white w-50">Quét mã sản phẩm để nhập nè</p>
+          <p class="text-white max-w-[220px]">Quét mã sản phẩm để nhập nè</p>
         </div>
         <button class="absolute bottom-4 right-4">
           <i
@@ -30,7 +30,7 @@
           ></i>
         </button>
       </div>
-      <div class="relative bg-white card_box-shadow w-90 rounded-2xl transition-all duration-200 ease-out
+      <div class="relative bg-white card_box-shadow w-full max-w-[360px] rounded-2xl transition-all duration-200 ease-out
     active:scale-95">
         <div class="flex flex-col items-center px-4 py-9 gap-4">
           <div class="p-5 rounded-xl bg-[#e7e7f1]">
@@ -41,7 +41,7 @@
           </div>
 
           <h2>List Products</h2>
-          <p class="w-50">Duyệt qua danh mục kho hàng để thực hiện tác vụ</p>
+          <p class="max-w-[220px]">Duyệt qua danh mục kho hàng để thực hiện tác vụ</p>
         </div>
         <button class="absolute bottom-4 right-4 bg-[#e7e7f1] rounded-full">
           <i class="pi pi-arrow-right text-color p-3 border-none"></i>
@@ -52,14 +52,66 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import Nav from '../components/Common/Nav.vue';
+import { useRouter } from 'vue-router';
+import { getProductCache, setProductCache } from '../services/productCache';
+import { getAllProducts } from '../services/appScriptService';
+
+const router = useRouter();
+const preLoadDone = ref(false);
+const isPreloadingProducts = ref(false);
+const preLoadError = ref("")
+
 const selectedBranch = computed(() => { 
   const branch = sessionStorage.getItem("selectedBranch");
 
   return branch || null;
 });
-function click(){
-    console.log("clicked")
+function navigateToScanner(){
+   router.push({
+    path:"/scanner",
+    query:{
+      autoStart:"1"
+    }
+   })
+
 }
+function navigateProductList(){
+  router.push("/product");
+}
+
+
+onMounted(()=>{
+  preloadProductsInBackGround();
+})
+
+async function  preloadProductsInBackGround(){
+if (!selectedBranch.value) {
+    router.push("/");
+    return;
+  }
+  const cached = getProductCache(selectedBranch.value);
+  console.log("cached:",Object.keys(cached).length);
+
+  if(cached){
+    preLoadDone.value= true;
+    return;
+  }
+  isPreloadingProducts.value = true;
+  preLoadError.value= "";
+  try{
+    const products = await getAllProducts(selectedBranch.value);
+    setProductCache(selectedBranch.value,products);
+    preLoadDone.value=true;
+    console.log("products action:", products);
+  }catch(e){
+    console.log("Preload err:", e);
+    preLoadError.value = "Can't preload data";
+  }finally{
+    isPreloadingProducts.value=false;
+  }
+}
+
+
 </script>

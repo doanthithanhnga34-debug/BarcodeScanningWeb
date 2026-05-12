@@ -9,6 +9,7 @@ import {
   findProductById,
   getAllProducts,
 } from "../../services/appScriptService";
+import { getProductCache, setProductCache } from "../../services/productCache";
 
 const {
   videoRef,
@@ -53,31 +54,32 @@ onMounted(async () => {
 
   isPreloading.value = true;
 
-  try {
-    const products = await getAllProducts(selectedBranch.value);
+  const cachedProducts = getProductCache(selectedBranch.value);
 
-    productMap.value = products;
-
-    isProductPreloaded.value = true;
-
-    console.log("Preload:" ,productMap.value);
-    console.log(
-      "Preload xong",
-      Object.keys(productMap.value).length,
-    );
-
-    await nextTick();
-
-    if (route.query.autoStart === "1") {
-      await startScanner();
-    }
-  } catch (err) {
-    console.error("Lỗi preload:", err);
-
-    isProductPreloaded.value = false;
-  } finally {
-    isPreloading.value = false;
+  if(cachedProducts){
+    productMap.value = cachedProducts
+    isPreloading.value=true;
+    console.log("Preload product from cache");
   }
+  getAllProducts(selectedBranch.value).then((products)=>{
+    productMap.value = products;
+    setProductCache(selectedBranch.value, products);
+    isProductPreloaded.value = true;
+      console.log("Product cache refreshed");
+  }).catch((err)=>{
+    console.log("Lỗi Preload", err);
+    isProductPreloaded.value= Boolean(cachedProducts);
+  })
+
+  await nextTick();
+
+  if(route.query.autoStart ==="1"){
+     await startScanner().catch((err) => {
+      console.error("Lỗi start scanner:", err);
+    });
+  }
+  // await delay(MIN_LOADING_TIME);
+  isPreloading.value = false;
 });
 
 watch(
