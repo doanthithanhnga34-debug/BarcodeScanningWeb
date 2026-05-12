@@ -8,7 +8,7 @@
           class="inline-flex items-center gap-2 h-[28px] mt-2 ml-3 p-4 glass-card rounded-lg mb-3 shadow-2xs"
         >
           <i class="pi pi-shop text-color"></i>
-          <span>Chi nhánh {{ selectedBranch }}</span>
+          <span>Branch {{ selectedBranch }}</span>
         </div>
       </div>
 
@@ -25,8 +25,8 @@
               />
             </div>
 
-            <h2 class="!text-white">Quét Barcode</h2>
-            <p class="text-white max-w-[220px]">Quét mã sản phẩm để nhập nè</p>
+            <h2 class="!text-white">Scan Barcode</h2>
+            <p class="text-white max-w-[220px]">Scan product barcodes to record expiry dates</p>
           </div>
           <button class="absolute bottom-4 right-4">
             <i
@@ -47,7 +47,7 @@
 
             <h2>List Products</h2>
             <p class="max-w-[220px]">
-              Duyệt qua danh mục kho hàng để thực hiện tác vụ
+              Select products from the inventory list
             </p>
           </div>
           <button class="absolute bottom-4 right-4 bg-[#e7e7f1] rounded-full">
