@@ -9,7 +9,7 @@
       <input
         v-model="keyword"
         type="text"
-        placeholder="Search branch..."
+        placeholder="Search..."
         class="w-full bg-transparent text-sm outline-none placeholder:text-slate-400"
       />
 

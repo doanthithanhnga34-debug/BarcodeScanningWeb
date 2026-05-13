@@ -3,6 +3,7 @@ import ScannerPage from '../pages/ScannerPage.vue'
 import HistoryPage from '../pages/HistoryPage.vue'
 import Home from '../pages/Home.vue'
 import ActionSelectionPage from '../pages/ActionSelectionPage.vue'
+import ProductPage from '../pages/ProductPage.vue'
 
 const routes =[
     {
@@ -19,6 +20,11 @@ const routes =[
         path:"/scanner",
         name:'Scanner',
         component: ScannerPage
+    },
+    {
+        path:"/product",
+        name:"ProductPage",
+        component: ProductPage
     },
     {
         path:'/history',

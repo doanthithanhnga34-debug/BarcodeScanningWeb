@@ -1,6 +1,8 @@
 <template>
-  <Loading v-if="isInitializing"  />
-  <div v-else class="h-dvh overflow-hidden screen-bg">
+  <div v-if=" isInitializing" class="h-dvh w-full flex justify-center items-center">
+    <Loading   />
+  </div>
+  <div v-else class="min-h-dvh overflow-y-auto screen-bg">
     <Nav />
     <div class="flex h-full flex-col px-4 pb-8 pt-2">
       <div class="mb-2 flex justify-start">
@@ -12,7 +14,7 @@
         </div>
       </div>
 
-      <div class="mx-auto flex w-full max-w-md flex-col gap-5 items-center">
+      <div class=" flex w-full flex-col gap-4 sm:gap-5 items-center">
         <div
           @click="navigateToScanner"
           class="relative bg-[#827aeb] w-full max-w-[360px] rounded-2xl card_box-shadow transition-all duration-200 ease-out active:scale-95"
@@ -35,6 +37,7 @@
           </button>
         </div>
         <div
+        @click="navigateProductList"
           class="relative bg-white card_box-shadow w-full max-w-[360px] rounded-2xl transition-all duration-200 ease-out active:scale-95"
         >
           <div class="flex flex-col items-center px-4 py-9 gap-4">
@@ -87,7 +90,8 @@ function navigateToScanner() {
   });
 }
 function navigateProductList() {
-  router.push("/product");
+  // router.push("/product");
+  console.log("ehhe")
 }
 
 onMounted(() => {
