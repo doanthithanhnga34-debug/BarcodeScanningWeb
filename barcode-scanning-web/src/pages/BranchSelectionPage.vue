@@ -95,7 +95,7 @@ function filterBranch(value) {
       </p>
     </section>
     <!-- Search -->
-    <Search @search="filterBranch" />
+    <Search @search="filterBranch" placeholder="Search branch..."/>
     <!-- Branch Selector List -->
     <BranchSelectorList :branches="filteredBranches" :total-branches="branches.length" />
   </div>

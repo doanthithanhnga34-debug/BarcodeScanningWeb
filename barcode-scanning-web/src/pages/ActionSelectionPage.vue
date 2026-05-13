@@ -2,10 +2,10 @@
   <div v-if=" isInitializing" class="h-dvh w-full flex justify-center items-center">
     <Loading   />
   </div>
-  <div v-else class="min-h-dvh overflow-y-auto screen-bg">
+  <div v-else class="h-dvh overflow-hidden  screen-bg">
     <Nav />
-    <div class="flex h-full flex-col px-4 pb-8 pt-2">
-      <div class="mb-2 flex justify-start">
+    <div class="flex h-[calc(100dvh-40px)] flex-col items-center px-4 pb-4 pt-2">
+      <div class="mb-2 h-1/10 flex justify-start w-full">
         <div
           class="inline-flex items-center gap-2 h-[28px] mt-2 ml-3 p-4 glass-card rounded-lg mb-3 shadow-2xs"
         >
@@ -14,12 +14,12 @@
         </div>
       </div>
 
-      <div class=" flex w-full flex-col gap-4 sm:gap-5 items-center">
+      <div class=" flex w-full h-9/10 flex-col gap-4 sm:gap-5 items-center justify-between">
         <div
           @click="navigateToScanner"
-          class="relative bg-[#827aeb] w-full max-w-[360px] rounded-2xl card_box-shadow transition-all duration-200 ease-out active:scale-95"
+          class="relative bg-[#827aeb] flex-1 w-full max-w-[360px] rounded-2xl card_box-shadow transition-all duration-200 ease-out active:scale-95"
         >
-          <div class="flex flex-col items-center px-4 py-9 gap-4">
+          <div class="flex flex-col  items-center px-4 py-8 h-full justify-center gap-4">
             <div class="p-4 glass-card rounded-xl">
               <img
                 src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAACXBIWXMAAAsTAAALEwEAmpwYAAADRUlEQVR4nO2cXVLUQBSFG7QGFyAuxsJNWLggRGFAXZrgFvwBLJ/48U3hs7oyD1OYnvRNbieTyfle51Tn9D2TTE9y0yEIIYQQQgghhBBCCCGEEMMDvADeAefAb+xcAHNgFkYCMANOgMsW8401OgMOY+26GnkD3OLDPIwEqi+MB7F2+12K/4AfF2EkUJ21XjyYQ1hcdry++VMPIHID7FoMxGu+N8dhepegZd5aDHzBj7H+CM+dz4Qzi4HU5edl0ZlvAMBeona3lkFqKep8g+hcPwXQDQUwMApgYBTAVAJ4dM+kcbnZQv8M+AhcLfRHDfod4MPS+MfOfrL0fQYwt9zzaaH/VKM/XKGPYT3mvaOfLH1u/ZLkDpC4W3i1Ylyr/leN/usK/c8a/TdHP1n63PolyR3AeiCLHniakP9J6LcT+nsPPyXr0tuBLHoUgP+BLHoUgP+BLHomHkDdXcAffU1gAwLIql8wLreO+5pABHiSkP8NNQBbCf1Dnb6k/9z65d4Pd/vDMaEAZjn164wCqAhDQQIPPQqgGQVQEYaCBIUDuDcG4FZQq37sAWxbAijtp42+OAqgIgwFCTz0KIBmFEBFGAoSeOhRAIMHsLVuy0oF0BxAqpt7q2//vVByAiiAZhRARRgKEnjoUQBrGwArxlcAnhOgvg0k+WQpfmZsM1EADfq6J0tHK/Sxc87SaFWLl744pSfA/0+WmloTZ4t2xIvM1kQFEOnXdXs/Vn1xxj4BRu5/9BNg5P7N/S/rNgHW1b+hD97U/2KdAFW//2nBfv8i/q0+uvTBm/pfWgRwalyGWvv9i/i3+ujcN28Y1xrAVY38e9++rf47+7AWqsS49PBAppT/zj4UQD0KoEIBlJ5ARAGUCcC67r40vnTXrS/fyf86B2Bdd586vHbqtk9Rqfcm+gzAuu7eWfyhyb27WbQvv9R7E70FMBVQAMOiAAZGAQyMAtiAAFKb9u0Vdb4BAK8StbuxDBL3iZ76tpUnLfeOdtm2Mm487c0U945e5sBiQFsX+3INPLea2Nfm3S7EGr5ua2R/sfG0B1PcO/q6dfGXzOzGjaeBz8DdhH6E5y3PhLtFrQ7Mlx0hhBBCCCGEEEIIIYQQIhThH7enMVyIeb/aAAAAAElFTkSuQmCC"
@@ -38,9 +38,9 @@
         </div>
         <div
         @click="navigateProductList"
-          class="relative bg-white card_box-shadow w-full max-w-[360px] rounded-2xl transition-all duration-200 ease-out active:scale-95"
+          class="relative bg-white card_box-shadow flex-1 w-full max-w-[360px] rounded-2xl transition-all duration-200 ease-out active:scale-95"
         >
-          <div class="flex flex-col items-center px-4 py-9 gap-4">
+          <div class="flex flex-col items-center px-4 py-8 h-full justify-center gap-4">
             <div class="p-5 rounded-xl bg-[#e7e7f1]">
               <img
                 src="../assets/image/product_svg_96.svg"
@@ -90,8 +90,7 @@ function navigateToScanner() {
   });
 }
 function navigateProductList() {
-  // router.push("/product");
-  console.log("ehhe")
+  router.push("/product"); 
 }
 
 onMounted(() => {

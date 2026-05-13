@@ -81,7 +81,6 @@ function isShowModal() {
 }
 
 function handleSave(data) {
-  console.log("saveData", data);
   emit("save-product", data);
 }
 function handleScanAgain() {
