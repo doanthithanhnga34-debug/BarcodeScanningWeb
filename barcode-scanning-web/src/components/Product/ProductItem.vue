@@ -4,12 +4,12 @@
     @click="selectProduct"
   >
     <div
-      class="bg-[#e7e7f1] w-1/4 p-2 rounded-md flex justify-center items-center"
+      class=" w-1/4  rounded-md flex justify-center items-center"
     >
       <img
         width="48"
         height="48"
-        src="https://img.icons8.com/forma-thin/48/product.png"
+        :src="productItem.image ? productItem.image : 'https://img.icons8.com/forma-thin/48/product.png'"
         alt="product"
       />
     </div>
