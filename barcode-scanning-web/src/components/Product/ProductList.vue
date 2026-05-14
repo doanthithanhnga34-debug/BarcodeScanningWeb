@@ -13,7 +13,7 @@ const emit = defineEmits(["select"]);
 </script>
 
 <template>
-  <div class="flex gap-4 flex-col items-center justify-center w-full">
+  <div class="flex gap-4 flex-col items-center px-4 justify-center w-full">
     <ProductItem
       v-for="(productItem, barcode) in products"
       :key="barcode"
