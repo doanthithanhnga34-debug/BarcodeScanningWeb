@@ -1,5 +1,5 @@
 <template>
-  <div class="absolute left-4 right-4 bottom-20 fadeInUp">
+
     <div
       class="card border-top rounded-3xl bg-white px-3 py-6 text-black shadow-lg z-50"
     >
@@ -26,7 +26,7 @@
         </button>
       </div>
     </div>
-  </div>
+
   <Transition name="modal">
     <ExpiryForm
       v-if="isShowExpiryForm"

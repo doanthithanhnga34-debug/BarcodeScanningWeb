@@ -202,9 +202,7 @@ async function scanAgainBarcode() {
 </script>
 <template>
   <div class="min-h-dvh overflow-hidden flex flex-col">
-    <div
-      class="flex w-full items-center justify-between bg-transparent absolute top-0 left-0 right-0 p-4 z-50"
-    >
+    <div class="scanner-header">
       <button
         class="w-12 h-12 flex items-center justify-center rounded-full bg-black/10"
         @click="goBackToBranch"
@@ -225,10 +223,7 @@ async function scanAgainBarcode() {
       </button>
     </div>
 
-    <div
-      v-if="showCamera"
-      class="relative w-full h-dvh bg-black overflow-hidden"
-    >
+    <div v-if="showCamera" class="scanner-container">
       <video
         id="scanner-video"
         ref="videoRef"
@@ -238,20 +233,13 @@ async function scanAgainBarcode() {
         webkit-playsinline
         disablepictureinpicture
         controlslist="nodownload nofullscreen noremoteplayback"
-        class="scanner-video h-full w-full object-cover"
+        class="scanner-video"
         @loadedmetadata="handleVideoLoadedMetadata"
       />
 
-      <img
-        v-if="capturedImage"
-        :src="capturedImage"
-        class="absolute inset-0 h-full w-full object-cover"
-      />
-
-      <div
-        class="pointer-events-none absolute inset-0 flex items-center justify-center"
-      >
-        <div class="relative w-3/4 h-28">
+      <img v-if="capturedImage" :src="capturedImage" class="captured-image" />
+      <div class="scanner-overlay">
+        <div class="scan-box">
           <div
             v-if="!result"
             class="absolute inset-0 overflow-hidden rounded-xl"
@@ -287,14 +275,15 @@ async function scanAgainBarcode() {
     >
       {{ errorMessage }}
     </p>
-    <ScannerResult
-      v-if="result"
-      :barcode="result.text"
-      :product="product"
-      :loading="isLoadingProduct"
-      :error-message="productError"
-      @scan-again="scanAgainBarcode"
-    />
+    <div v-if="result?.text" class="scanner-result-bottom-sheet">
+      <ScannerResult
+        :barcode="result.text"
+        :product="product"
+        :loading="isLoadingProduct"
+        :error-message="productError"
+        @scan-again="scanAgainBarcode"
+      />
+    </div>
 
     <div
       v-if="isPreloading"
@@ -305,6 +294,20 @@ async function scanAgainBarcode() {
   </div>
 </template>
 <style scoped>
+.scanner-result-bottom-sheet {
+
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 60px;
+  height: 100px;
+  z-index: 10000;
+  overflow-y: auto;
+  background: transparent;
+  padding:0 10px 0 10px;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  animation: fadeInUp .3s ease-out;
+}
 .scanner-video {
   width: 100%;
   height: 100%;
@@ -326,5 +329,111 @@ async function scanAgainBarcode() {
 
 .scanner-video::-webkit-media-controls-start-playback-button {
   display: none !important;
+}
+.scanner-container {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100dvh;
+  background: #000;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.scanner-video {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  background: #000;
+
+  /* Fix iOS Safari video layer */
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+}
+
+.scanner-header {
+  position: fixed;
+  top: env(safe-area-inset-top, 0px);
+  left: 0;
+  right: 0;
+  z-index: 9999;
+
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 16px;
+  pointer-events: auto;
+}
+
+.scanner-header button {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 9999px;
+  background: rgba(0, 0, 0, 0.45);
+}
+
+.scanner-overlay {
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.scan-box {
+  position: relative;
+  width: 75vw;
+  height: 112px;
+}
+
+.scan-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+
+  height: 3px;
+  background: #ff3b30;
+  box-shadow: 0 0 12px rgba(255, 59, 48, 0.9);
+
+  animation: scanMove 1.4s linear infinite;
+}
+
+@keyframes scanMove {
+  0% {
+    transform: translateY(0);
+  }
+
+  100% {
+    transform: translateY(112px);
+  }
+}
+
+.scanner-video::-webkit-media-controls,
+.scanner-video::-webkit-media-controls-panel,
+.scanner-video::-webkit-media-controls-play-button,
+.scanner-video::-webkit-media-controls-start-playback-button {
+  display: none !important;
+  opacity: 0 !important;
+}
+.captured-image {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 </style>
