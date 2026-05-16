@@ -4,7 +4,7 @@
       class="flex flex-row justify-around items-center p-4 bg-[#f3f3fd] rounded-lg mb-3 border-fushia-50 shadow-xs"
     >
       <div
-        class="flex basis-1/3 icon-box items-center justify-centerw-20 h-20 rounded-xl bg-primary"
+        class="flex basis-1/3  items-center justify-center"
       >
         <img
           width="48"

@@ -239,7 +239,7 @@ async function scanAgainBarcode() {
 
       <div
         v-if="showCamera"
-        class="relative w-full h-[450px] bg-black overflow-hidden rounded-[2rem]"
+        class="relative w-full h-[430px] bg-black overflow-hidden rounded-[2rem]"
       >
         <!-- TL -->
         <div
