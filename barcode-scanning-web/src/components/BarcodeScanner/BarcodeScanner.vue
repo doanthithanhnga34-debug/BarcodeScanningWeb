@@ -295,18 +295,19 @@ async function scanAgainBarcode() {
 </template>
 <style scoped>
 .scanner-result-bottom-sheet {
+  position: fixed;
+  left: 10px;
+  right: 10px;
+  bottom: calc(60px + env(safe-area-inset-bottom, 0px));
 
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 60px;
-  height: 100px;
   z-index: 10000;
-  overflow-y: auto;
+  pointer-events: auto;
+
+  max-height: 35dvh;
+  overflow-y: visible;
+
   background: transparent;
-  padding:0 10px 0 10px;
-  padding-bottom: env(safe-area-inset-bottom, 0px);
-  animation: fadeInUp .3s ease-out;
+  animation: fadeInUp 0.3s ease-out;
 }
 .scanner-video {
   width: 100%;
