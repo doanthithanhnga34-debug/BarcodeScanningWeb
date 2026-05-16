@@ -20,55 +20,88 @@ export function useBarcodeScanner() {
   const scannerStarted = ref(false);
   const scanLocked = ref(false);
 
-  async function startScanner() {
-    if (scannerStarted.value) return;
-    if (isScanning.value) return;
-    try {
-      result.value = null;
-      errorMessage.value = "";
-      showCamera.value = true;
-      isScanning.value = true;
-      scanLocked.value = false;
+ function fixIOSVideoInline(video) {
+  if (!video) return;
 
-      await nextTick();
+  video.setAttribute("playsinline", "");
+  video.setAttribute("webkit-playsinline", "");
+  video.setAttribute("muted", "");
+  video.setAttribute("autoplay", "");
+  video.setAttribute("poster", "");
 
-      if (!videoRef.value) {
-        throw new Error("Camera view not found");
-      }
+  video.playsInline = true;
+  video.muted = true;
+  video.autoplay = true;
+  video.controls = false;
 
-      await startZxingScanner(
-        videoRef.value,
-        selectedDeviceId.value || "",
-        (value) => {
-          if (scanLocked.value) return;
-          scanLocked.value = true;
-          result.value = value;
-          capturedImage.value = value.image || null;
-          saveToHistory(value.text);
-          finishScanner();
-        },
-        (error) => {
-          const ignoreErrors = [
-            "NotFoundException",
-            "ChecksumException",
-            "FormatException",
-          ];
+  video.removeAttribute("controls");
 
-          if (ignoreErrors.includes(error?.name)) return;
+  video.style.width = "100%";
+  video.style.height = "100%";
+  video.style.objectFit = "cover";
+}
 
-          console.error(error);
-          // errorMessage.value = "Unable to scan barcode";
-        },
-      );
-      scannerStarted.value = true;
-    } catch (err) {
-      console.error(err);
-      errorMessage.value = err.message || "Unable to open camera";
-      isScanning.value = false;
-      showCamera.value = false;
-      scannerStarted.value = false;
+ async function startScanner() {
+  if (scannerStarted.value) return;
+  if (isScanning.value) return;
+
+  try {
+    result.value = null;
+    errorMessage.value = "";
+    showCamera.value = true;
+    isScanning.value = true;
+    scanLocked.value = false;
+
+    await nextTick();
+
+    if (!videoRef.value) {
+      throw new Error("Camera view not found");
     }
+
+    fixIOSVideoInline(videoRef.value);
+
+    await startZxingScanner(
+      videoRef.value,
+      selectedDeviceId.value || "",
+      (value) => {
+        if (scanLocked.value) return;
+        scanLocked.value = true;
+        result.value = value;
+        capturedImage.value = value.image || null;
+        saveToHistory(value.text);
+        finishScanner();
+      },
+      (error) => {
+        const ignoreErrors = [
+          "NotFoundException",
+          "ChecksumException",
+          "FormatException",
+        ];
+
+        if (ignoreErrors.includes(error?.name)) return;
+
+        console.error(error);
+      },
+    );
+
+    await nextTick();
+    fixIOSVideoInline(videoRef.value);
+
+    if (videoRef.value) {
+      videoRef.value.play().catch((err) => {
+        console.warn("iOS video play warning:", err);
+      });
+    }
+
+    scannerStarted.value = true;
+  } catch (err) {
+    console.error(err);
+    errorMessage.value = err.message || "Unable to open camera";
+    isScanning.value = false;
+    showCamera.value = false;
+    scannerStarted.value = false;
   }
+}
 
   async function loadDevices() {
     try {
@@ -91,21 +124,30 @@ export function useBarcodeScanner() {
   }
 
   async function scanAgain() {
-    // if (isScanning.value) return;
-    // stopZxingScanner();
-    result.value = null;
-    errorMessage.value = "";
-    capturedImage.value = null;
-    showCamera.value = true;
-    scanLocked.value = false;
-    isScanning.value = true;
+  result.value = null;
+  errorMessage.value = "";
+  capturedImage.value = null;
+  showCamera.value = true;
+  scanLocked.value = false;
 
-    unlockZxingScanner();
-    await nextTick();
-    if (!scannerStarted.value) {
-      await startScanner();
-    }
+  await nextTick();
+
+  if (videoRef.value) {
+    fixIOSVideoInline(videoRef.value);
+
+    videoRef.value.play().catch((err) => {
+      console.warn("iOS video play warning:", err);
+    });
   }
+
+  if (!scannerStarted.value) {
+    await startScanner();
+    return;
+  }
+
+  isScanning.value = true;
+  unlockZxingScanner();
+}
   function finishScanner() {
     // stopZxingScanner();
     isScanning.value = false;

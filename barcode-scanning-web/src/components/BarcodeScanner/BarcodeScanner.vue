@@ -44,6 +44,47 @@ const selectedBranch = computed(() => {
 function delay(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
+function fixIOSVideoInline() {
+  const video = videoRef.value;
+
+  if (!video) return;
+
+  video.setAttribute("playsinline", "");
+  video.setAttribute("webkit-playsinline", "");
+  video.setAttribute("muted", "");
+  video.setAttribute("autoplay", "");
+
+  video.playsInline = true;
+  video.muted = true;
+  video.autoplay = true;
+  video.controls = false;
+
+  video.removeAttribute("controls");
+}
+
+watch(showCamera, async (visible) => {
+  if (!visible) return;
+
+  await nextTick();
+  fixIOSVideoInline();
+
+  const video = videoRef.value;
+  if (video) {
+    video.play().catch((err) => {
+      console.warn("iOS video play warning:", err);
+    });
+  }
+});
+function handleVideoLoadedMetadata() {
+  fixIOSVideoInline();
+
+  const video = videoRef.value;
+  if (video) {
+    video.play().catch((err) => {
+      console.warn("iOS video metadata play warning:", err);
+    });
+  }
+}
 
 onMounted(async () => {
   if (!selectedBranch.value) {
@@ -75,11 +116,23 @@ onMounted(async () => {
   await nextTick();
 
   if (route.query.autoStart === "1") {
+    await nextTick();
+    fixIOSVideoInline();
+
     await startScanner().catch((err) => {
       console.error("Lỗi start scanner:", err);
     });
+
+    await nextTick();
+    fixIOSVideoInline();
+
+    const video = videoRef.value;
+    if (video) {
+      video.play().catch((err) => {
+        console.warn("iOS video play warning:", err);
+      });
+    }
   }
-  // await delay(MIN_LOADING_TIME);
   isPreloading.value = false;
 });
 
@@ -128,7 +181,23 @@ function goBackToBranch() {
 async function scanAgainBarcode() {
   product.value = null;
   productError.value = "";
-  await scanAgain();
+
+  await nextTick();
+  fixIOSVideoInline();
+
+  await scanAgain().catch((err) => {
+    console.error("Lỗi scan again:", err);
+  });
+
+  await nextTick();
+  fixIOSVideoInline();
+
+  const video = videoRef.value;
+  if (video) {
+    video.play().catch((err) => {
+      console.warn("iOS video play warning:", err);
+    });
+  }
 }
 </script>
 <template>
@@ -150,7 +219,7 @@ async function scanAgainBarcode() {
       </span>
       <button
         class="w-12 h-12 flex items-center justify-center rounded-full bg-black/10"
-        @click="scanAgain"
+        @click="scanAgainBarcode"
       >
         <i class="pi pi-replay !text-xl text-white"></i>
       </button>
@@ -161,11 +230,16 @@ async function scanAgainBarcode() {
       class="relative w-full h-dvh bg-black overflow-hidden"
     >
       <video
+        id="scanner-video"
         ref="videoRef"
         autoplay
         muted
         playsinline
-        class="h-full w-full object-cover"
+        webkit-playsinline
+        disablepictureinpicture
+        controlslist="nodownload nofullscreen noremoteplayback"
+        class="scanner-video h-full w-full object-cover"
+        @loadedmetadata="handleVideoLoadedMetadata"
       />
 
       <img
@@ -221,12 +295,36 @@ async function scanAgainBarcode() {
       :error-message="productError"
       @scan-again="scanAgainBarcode"
     />
-    
+
     <div
       v-if="isPreloading"
       class="absolute inset-0 z-[999] flex items-center justify-center bg-[#F9F7FF]"
     >
-    <Loading v-if="isPreloading"></Loading>
+      <Loading v-if="isPreloading"></Loading>
     </div>
   </div>
 </template>
+<style scoped>
+.scanner-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  background: #000;
+}
+
+.scanner-video::-webkit-media-controls {
+  display: none !important;
+}
+
+.scanner-video::-webkit-media-controls-panel {
+  display: none !important;
+}
+
+.scanner-video::-webkit-media-controls-play-button {
+  display: none !important;
+}
+
+.scanner-video::-webkit-media-controls-start-playback-button {
+  display: none !important;
+}
+</style>
