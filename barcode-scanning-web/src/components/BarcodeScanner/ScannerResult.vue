@@ -1,9 +1,9 @@
 <template>
 
     <div
-      class="card border-top rounded-3xl bg-white px-3 py-6 text-black shadow-lg z-50"
+      class="  px-3 py-6  z-50 fadeInUp"
     >
-      <div class="flex justify-around items-center gap-3">
+      <div class="flex justify-around items-center gap-3 p-4 bg-[#f3f3fd] rounded-lg mb-3 border-fushia-50 shadow-xs">
         <div
           class="flex icon-box items-center justify-centerw-20 h-20 rounded-xl bg-primary"
         >
@@ -18,13 +18,17 @@
         <p v-else class="text-sm text-red-500 font-bold">
           {{ errorMessage || "Không tìm thấy sản phẩm" }}
         </p>
-        <button
-          class="flex items-center justify-center bg-black p-4 rounded-4xl"
+       
+      </div>
+       <button
+          class="flex items-center justify-center w-full bg-blue-700 p-4 rounded-xl  text-sm font-semibold text-white shadow-lg active:scale-[0.98] transition"
           @click="isShowModal"
         >
-          <i class="pi pi-plus text-white"></i>
+         Xác nhận
         </button>
-      </div>
+        <span class="mt-3 text-center text-xs text-slate-400">
+        Chạm “Xác nhận” để thiết lập hạn sử dụng
+      </span>
     </div>
 
   <Transition name="modal">

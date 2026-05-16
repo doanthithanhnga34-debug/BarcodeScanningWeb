@@ -5,6 +5,7 @@ import Home from '../pages/Home.vue'
 import ActionSelectionPage from '../pages/ActionSelectionPage.vue'
 import ProductPage from '../pages/ProductPage.vue'
 
+
 const routes =[
     {
         path:"/",

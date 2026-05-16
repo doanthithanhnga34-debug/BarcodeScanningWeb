@@ -12,7 +12,7 @@
 
   filter: drop-shadow(0 0 8px var(--primary-color));
 
-  animation: scanner 1.8s ease-in-out infinite;
+  animation: scanner 4s ease-in-out infinite;
 }
 
 @keyframes scanner {
@@ -21,7 +21,7 @@
   }
 
   50% {
-    transform: translateY(110px);
+    transform: translateY(550px);
   }
 
   100% {
