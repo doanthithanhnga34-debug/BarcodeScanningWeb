@@ -4,14 +4,16 @@ import Toast from "primevue/toast";
 
 <template>
   <Toast
-    position="top-right"
+    position="top-center"
     class="z-[9999]"
     :pt="{
       root: {
         class: `
-        w-[92vw]
+        top-20 
+        right-4
+        w-[70vw]
         max-w-md
-        px-2
+        mx-2
         sm:px-0
         mt-safe
       `,

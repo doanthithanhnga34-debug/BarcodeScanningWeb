@@ -180,6 +180,7 @@ async function handleSave() {
           ? "Updated expiry date successfully."
           : "Added successfully",
       life: 2500,
+       styleClass: "my-toast",
     });
 
     emit("save", result.data);

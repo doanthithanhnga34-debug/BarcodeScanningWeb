@@ -14,7 +14,7 @@ export async function findProductById(barcode,branch) {
 }
 
 export async function getAllProducts(branch){
-  const url =`${PRODUCT_API_URL}?action=getAllProduct&branch=${encodeURIComponent(branch)}`;
+  const url =`${PRODUCT_API_URL}?action=getAllProducts&branch=${encodeURIComponent(branch)}`;
 
   const res = await fetch(url);
   const data = await res.json();

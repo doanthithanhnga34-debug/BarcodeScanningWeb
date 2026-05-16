@@ -9,11 +9,7 @@
         <img
           width="48"
           height="48"
-          :src="
-            product.image
-              ? product.image
-              : 'https://img.icons8.com/forma-thin/48/product.png'
-          "
+          :src="productImage"
           alt="product"
         />
       </div>
@@ -85,6 +81,13 @@ const productName = computed(() => {
     props.product?.["Tên sản phẩm"] ||
     props.product?.["ten_san_pham"] ||
     "Không có tên sản phẩm"
+  );
+});
+const productImage = computed(() => {
+  return (
+    props.product?.image ||
+
+    "https://img.icons8.com/forma-thin/48/product.png"
   );
 });
 

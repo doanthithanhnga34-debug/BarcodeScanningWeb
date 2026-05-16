@@ -1,0 +1,9 @@
+.my-toast {
+    width: 100%;
+  overflow: hidden;
+  box-shadow: 0 20px 40px rgba(0,0,0,.12);
+}
+.p-toast{
+    display: flex !important;
+    justify-content: center !important;
+}
