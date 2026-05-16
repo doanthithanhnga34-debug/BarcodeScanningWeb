@@ -21,7 +21,7 @@
        
       </div>
        <button
-          class="flex items-center justify-center w-full bg-blue-700 p-4 rounded-xl  text-sm font-semibold text-white shadow-lg active:scale-[0.98] transition"
+          class="button flex items-center justify-center w-full bg-blue-700 p-4 rounded-xl  text-sm font-semibold text-white shadow-lg active:scale-[0.98] transition"
           @click="isShowModal"
         >
          Xác nhận
