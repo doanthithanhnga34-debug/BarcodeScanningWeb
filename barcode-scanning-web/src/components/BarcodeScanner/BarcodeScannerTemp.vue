@@ -202,7 +202,7 @@ async function scanAgainBarcode() {
 }
 </script>
 <template>
-  <div class="min-h-dvh screen">
+  <div class="min-h-dvh screen-bg">
     <div
       v-if="isPreloading"
       class="absolute w-full inset-0 z-[999] flex items-center justify-center bg-[#F9F7FF]"
