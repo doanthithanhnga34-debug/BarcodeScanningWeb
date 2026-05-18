@@ -16,28 +16,48 @@ const isProductPreloaded = ref(false);
 const keyWord = ref("");
 const selectedProduct = ref(null);
 const isShowExpiryForm = ref(false);
-onMounted(() => {
+const productList = ref([]);
+
+const mapProductsToList = (products) => {
+  return Object.entries(products || {}).map(([barcode, product]) => ({
+    barcode,
+    ...product,
+    searchName: normalizeText(product.name),
+  }));
+};
+
+onMounted(async () => {
   if (!selectedBranch) {
     router.push("/");
     return;
   }
 
   const cachedProducts = getProductCache(selectedBranch);
-  console.log(cachedProducts);
 
   if (cachedProducts) {
     productMap.value = cachedProducts;
+    productList.value = mapProductsToList(cachedProducts);
+
+    isProductPreloaded.value = true;
   }
 
-  getAllProducts(selectedBranch)
-    .then((products) => {
-      productMap.value = products;
-      setProductCache(selectedBranch, products);
-    })
-    .catch((e) => {
-      console.log("error", e);
-      isProductPreloaded.value = Boolean(cachedProducts);
-    });
+  try {
+    const response = await getAllProducts(selectedBranch);
+
+    console.log("raw products response:", response);
+
+    const products = response?.data ?? response ?? {};
+
+    productMap.value = products;
+    productList.value = mapProductsToList(products);
+    setProductCache(selectedBranch, products);
+    isProductPreloaded.value = true;
+
+    console.log("products:", products);
+  } catch (e) {
+    console.log("error", e);
+    isProductPreloaded.value = Boolean(cachedProducts);
+  }
 });
 
 const normalizeText = (text) => {
@@ -50,21 +70,6 @@ const normalizeText = (text) => {
     .toLowerCase();
 };
 
-const productItems = computed(() => {
-  return Object.entries(productMap.value).map(([barcode, product]) => ({
-    barcode,
-    ...product,
-    searchName: normalizeText(product.name),
-  }));
-});
-
-const fuse = computed(() => {
-  return new Fuse(productItems.value, {
-    keys: ["searchName", "barcode"],
-    threshold: 0.35,
-    ignoreLocation: true,
-  });
-});
 const handleSearch = (value) => {
   keyWord.value = value;
 };
@@ -76,26 +81,23 @@ const filterProducts = computed(() => {
   const rawKeyword = keyWord.value.trim();
 
   if (!rawKeyword) {
-    return productMap.value;
+    return productList.value;
   }
 
   const isNumberSearch = isNumericKeyword(rawKeyword);
   const q = normalizeText(rawKeyword);
 
-  return Object.fromEntries(
-    Object.entries(productMap.value).filter(([barcode, product]) => {
-      const code = String(barcode || "")
-        .trim()
-        .toLowerCase();
-      const name = normalizeText(product.name);
+  return productList.value.filter((product) => {
+    const code = String(product.barcode || "")
+      .trim()
+      .toLowerCase();
 
-      if (isNumberSearch) {
-        return code.endsWith(q);
-      }
+    if (isNumberSearch) {
+      return code.endsWith(q);
+    }
 
-      return name.includes(q);
-    }),
-  );
+    return product.searchName.includes(q);
+  });
 });
 
 const handleSelectedProduct = (product) => {
@@ -111,14 +113,19 @@ const closeExpiryForm = () => {
 </script>
 
 <template>
-  <div class="h-dvh screen-bg">
+  <div class="h-dvh overflow-hidden screen-bg flex flex-col">
     <Nav />
 
-    <div class="px-4 pt-6">
-      <div class="px-4 pb-3  sticky top-3 ">
+    <div class="flex min-h-0 flex-1 flex-col px-4 pt-6">
+      <div class="shrink-0 px-4 pb-3">
         <Search @search="handleSearch" placeholder="Search product..." />
       </div>
-      <ProductList :products="filterProducts" @select="handleSelectedProduct" />
+     <div class="min-h-0 flex-1">
+        <ProductList
+          :products="filterProducts"
+          @select="handleSelectedProduct"
+        />
+      </div>
     </div>
     <ExpiryForm
       v-if="isShowExpiryForm && selectedProduct"

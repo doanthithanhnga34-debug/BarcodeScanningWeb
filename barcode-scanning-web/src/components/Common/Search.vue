@@ -1,7 +1,7 @@
 <template>
   <section class="mb-7 w-full">
     <div
-      class="relative flex card items-center gap-3 rounded-2xl border border-slate-100 bg-white px-4 py-3 shadow-sm"
+      class="relative flex card items-center gap-3 rounded-md border border-slate-100 bg-white px-4 py-3 shadow-sm"
     >
       <span class="text-slate-400">
         <i class="pi pi-search" style="font-size: 1rem"></i>

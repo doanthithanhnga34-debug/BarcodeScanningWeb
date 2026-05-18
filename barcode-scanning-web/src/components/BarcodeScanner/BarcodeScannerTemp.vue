@@ -12,9 +12,7 @@ import { getProductCache, setProductCache } from "../../services/productCache";
 
 const {
   videoRef,
-  devices,
   showCamera,
-  selectedDeviceId,
   result,
   isScanning,
   errorMessage,
@@ -118,23 +116,36 @@ onMounted(async () => {
   isPreloading.value = true;
 
   const cachedProducts = getProductCache(selectedBranch.value);
+  // const cachedProducts = getProductCache(selectedBranch.value);
+
+  console.log(
+    "cachedProducts type:",
+    Array.isArray(cachedProducts) ? "array" : typeof cachedProducts,
+  );
+  console.log(
+    "cachedProducts count:",
+    cachedProducts ? Object.keys(cachedProducts).length : 0,
+  );
+  console.log(
+    "sample cache keys:",
+    cachedProducts ? Object.keys(cachedProducts).slice(0, 5) : [],
+  );
 
   if (cachedProducts) {
     productMap.value = cachedProducts;
     isPreloading.value = true;
     console.log("Preload product from cache");
   }
-  getAllProducts(selectedBranch.value)
-    .then((products) => {
-      productMap.value = products;
-      setProductCache(selectedBranch.value, products);
-      isProductPreloaded.value = true;
-      console.log("Product cache refreshed");
-    })
-    .catch((err) => {
-      console.log("Lỗi Preload", err);
-      isProductPreloaded.value = Boolean(cachedProducts);
-    });
+
+  getAllProducts(selectedBranch.value).then((response) => {
+    const products = response?.data ?? response ?? {};
+
+    productMap.value = products;
+    setProductCache(selectedBranch.value, products);
+    isProductPreloaded.value = true;
+
+    console.log("Product cache refreshed:", Object.keys(products).length);
+  });
 
   await nextTick();
 
@@ -161,8 +172,11 @@ watch(
     }
 
     isLoadingProduct.value = true;
+
     try {
       const cleanBarcode = barcode.trim();
+      console.log("scan barcode:", cleanBarcode);
+      console.log("found local:", productMap.value?.[cleanBarcode]);
       const found = productMap.value[cleanBarcode];
       if (found) {
         product.value = found;

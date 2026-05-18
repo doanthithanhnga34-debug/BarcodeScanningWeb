@@ -19,7 +19,11 @@ export async function getAllProducts(branch){
   const res = await fetch(url);
   const data = await res.json();
 
-  return data
+   if (!data.success) {
+    throw new Error(data.message || "Can't get products");
+  }
+
+  return data;
 }
 
 export async function saveExpiryToSheet(payload){

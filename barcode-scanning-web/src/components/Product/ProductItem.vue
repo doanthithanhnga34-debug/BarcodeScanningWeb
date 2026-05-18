@@ -1,27 +1,31 @@
 <template>
   <div
-    class="flex p-5 w-90 rounded-lg bg-white card_box-shadow gap-2"
+    class="flex h-full px-5 py-5 w-full shadow-sm items-center gap-4 rounded-2xl bg-white ring-1 ring-black/5 active:scale-[0.98] transition"
     @click="selectProduct"
   >
     <div
-      class=" w-1/4  rounded-md flex justify-center items-center"
+      class="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-[#f5f3ff]"
     >
       <img
-        width="48"
-        height="48"
-        :src="productItem.image ? productItem.image : 'https://img.icons8.com/forma-thin/48/product.png'"
+        :src="
+          productItem.image
+            ? productItem.image
+            : 'https://img.icons8.com/forma-thin/48/product.png'
+        "
         alt="product"
+        loading="lazy"
+        class="max-h-12 max-w-12 object-contain"
       />
     </div>
-    <div class="w-3/4 text-left">
-      <h5 class="font-semibold text-lg">{{ productItem.name }}</h5>
-      <p class="text-sm">{{ barcode }}</p>
+    <div class="min-w-0 flex-1 text-left">
+      <h5 class="line-clamp-2 text-[15px] font-semibold leading-snug text-[#5b5670]">{{ productItem.name }}</h5>
+      <p class="mt-1 text-xs text-[#8f8aa3]">{{ barcode }}</p>
     </div>
   </div>
 </template>
 
 <script setup>
-import { defineEmits } from 'vue';
+import { defineEmits } from "vue";
 const props = defineProps({
   barcode: {
     type: String,

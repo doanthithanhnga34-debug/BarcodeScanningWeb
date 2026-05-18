@@ -3,23 +3,13 @@
     <div
       class="flex flex-row justify-around items-center p-4 bg-[#f3f3fd] rounded-lg mb-3 border-fushia-50 shadow-xs"
     >
-      <div
-        class="flex basis-1/3  items-center justify-center"
-      >
-        <img
-          width="48"
-          height="48"
-          :src="productImage"
-          alt="product"
-        />
+      <div class="flex basis-1/3 items-center justify-center">
+        <img width="48" height="48" :src="productImage" alt="product" />
       </div>
       <p v-if="loading" class="mt-1 text-sm font-bold text-gray-500">
         Đang lấy thông tin...
       </p>
-      <p
-        v-else-if="product"
-        class="basis-2/3 text-sm text-gray-500 font-bold "
-      >
+      <p v-else-if="product" class="basis-2/3 text-sm text-gray-500 font-bold">
         {{ productName }}
       </p>
       <p v-else class="text-sm text-red-500 font-bold">
@@ -85,9 +75,7 @@ const productName = computed(() => {
 });
 const productImage = computed(() => {
   return (
-    props.product?.image ||
-
-    "https://img.icons8.com/forma-thin/48/product.png"
+    props.product?.image || "https://img.icons8.com/forma-thin/48/product.png"
   );
 });
 

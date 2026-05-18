@@ -3,6 +3,7 @@
     <button @click="goBack">
       <i class="pi pi-arrow-left text-color ml-2"></i>
     </button>
+    
   </nav>
 </template>
 
