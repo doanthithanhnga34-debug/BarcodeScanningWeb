@@ -34,7 +34,9 @@ const isLoadingProduct = ref(false);
 const productError = ref("");
 const MIN_LOADING_TIME = 5000;
 const isProductPreloaded = ref(false);
-const test = ref(false);
+
+const videoPaintKey = ref(0);
+const isVideoReady = ref(false);
 
 const selectedBranch = computed(() => {
   const branch = sessionStorage.getItem("selectedBranch");
@@ -50,10 +52,10 @@ function fixIOSVideoInline() {
 
   if (!video) return;
 
-  video.setAttribute("playsinline", "");
-  video.setAttribute("webkit-playsinline", "");
-  video.setAttribute("muted", "");
-  video.setAttribute("autoplay", "");
+  video.setAttribute("playsinline", "true");
+  video.setAttribute("webkit-playsinline", "true");
+  video.setAttribute("muted", "true");
+  video.setAttribute("autoplay", "true");
 
   video.playsInline = true;
   video.muted = true;
@@ -62,29 +64,49 @@ function fixIOSVideoInline() {
 
   video.removeAttribute("controls");
 }
+async function forceVideoRepaint() {
+  await nextTick();
 
+  const video = videoRef.value;
+  if (!video) return;
+
+  // Force layout read
+  video.getBoundingClientRect();
+
+  // Force Safari repaint layer
+  video.style.transform = "translateZ(0) scale(1.0001)";
+
+  await new Promise((resolve) => requestAnimationFrame(resolve));
+
+  video.style.transform = "translateZ(0) scale(1)";
+
+  await new Promise((resolve) => requestAnimationFrame(resolve));
+
+  isVideoReady.value = true;
+}
+async function ensureVideoPlaying() {
+  await nextTick();
+
+  fixIOSVideoInline();
+
+  const video = videoRef.value;
+
+  if (!video) return;
+
+  try {
+    await video.play();
+    await forceVideoRepaint();
+  } catch (err) {
+    console.warn("Video play warning:", err);
+  }
+}
 watch(showCamera, async (visible) => {
   if (!visible) return;
-
-  await nextTick();
-  fixIOSVideoInline();
-
-  const video = videoRef.value;
-  if (video) {
-    video.play().catch((err) => {
-      console.warn("iOS video play warning:", err);
-    });
-  }
+  await ensureVideoPlaying();
 });
-function handleVideoLoadedMetadata() {
+async function handleVideoLoadedMetadata() {
   fixIOSVideoInline();
-
-  const video = videoRef.value;
-  if (video) {
-    video.play().catch((err) => {
-      console.warn("iOS video metadata play warning:", err);
-    });
-  }
+  await ensureVideoPlaying();
 }
 
 onMounted(async () => {
@@ -117,21 +139,11 @@ onMounted(async () => {
   await nextTick();
 
   if (route.query.autoStart === "1") {
-    await nextTick();
-    fixIOSVideoInline();
-
-    await startScanner().catch((err) => {
+    try {
+      await startScanner();
+      await ensureVideoPlaying();
+    } catch (err) {
       console.error("Lỗi start scanner:", err);
-    });
-
-    await nextTick();
-    fixIOSVideoInline();
-
-    const video = videoRef.value;
-    if (video) {
-      video.play().catch((err) => {
-        console.warn("iOS video play warning:", err);
-      });
     }
   }
   isPreloading.value = false;
@@ -183,21 +195,11 @@ async function scanAgainBarcode() {
   product.value = null;
   productError.value = "";
 
-  await nextTick();
-  fixIOSVideoInline();
-
-  await scanAgain().catch((err) => {
+  try {
+    await scanAgain();
+    await ensureVideoPlaying();
+  } catch (err) {
     console.error("Lỗi scan again:", err);
-  });
-
-  await nextTick();
-  fixIOSVideoInline();
-
-  const video = videoRef.value;
-  if (video) {
-    video.play().catch((err) => {
-      console.warn("iOS video play warning:", err);
-    });
   }
 }
 </script>
@@ -238,34 +240,8 @@ async function scanAgainBarcode() {
       <!-- Scanner -->
 
       <div
-        v-if="showCamera"
-        class="relative w-full h-[430px] bg-black overflow-hidden rounded-[2rem]"
+        class="scanner-box relative w-full h-[430px] bg-black overflow-hidden rounded-[2rem]"
       >
-        <!-- TL -->
-        <div
-          class="absolute top-0 left-0 w-10 h-10 border-t-4 border-l-4 border-white rounded-tl-[2rem]"
-        ></div>
-
-        <!-- TR -->
-        <div
-          class="absolute top-0 right-0 w-10 h-10 border-t-4 border-r-4 border-white rounded-tr-[2rem]"
-        ></div>
-
-        <!-- BL -->
-        <div
-          class="absolute bottom-0 left-0 w-10 h-10 border-b-4 border-l-4 border-white rounded-bl-[2rem]"
-        ></div>
-
-        <!-- BR -->
-        <div
-          class="absolute bottom-0 right-0 w-10 h-10 border-b-4 border-r-4 border-white rounded-br-[2rem]"
-        ></div>
-        <div
-          v-if="!result"
-          class="pointer-events-none absolute inset-0 z-10 overflow-hidden"
-        >
-          <div class="scan-line"></div>
-        </div>
         <video
           id="scanner-video"
           ref="videoRef"
@@ -275,15 +251,48 @@ async function scanAgainBarcode() {
           webkit-playsinline
           disablepictureinpicture
           controlslist="nodownload nofullscreen noremoteplayback"
-          class="h-full w-full object-cover"
+          class="h-full w-full object-cover scanner-video"
           @loadedmetadata="handleVideoLoadedMetadata"
         />
 
         <img
           v-if="capturedImage"
           :src="capturedImage"
-          class="absolute inset-0 h-full w-full object-cover"
+          class="absolute inset-0 z-[2] h-full w-full object-cover"
         />
+
+        <div
+          v-show="showCamera && !result"
+          class="pointer-events-none absolute inset-0 z-10 overflow-hidden"
+        >
+          <div class="scan-line"></div>
+        </div>
+        <!-- Corner overlay -->
+        <div
+          v-show="showCamera"
+          class="pointer-events-none absolute inset-0 z-20"
+        >
+          <!-- TL -->
+          <div
+            class="absolute top-0 left-0 w-10 h-10 border-t-4 border-l-4 border-white rounded-tl-[2rem]"
+          ></div>
+
+          <!-- TR -->
+          <div
+            class="absolute top-0 right-0 w-10 h-10 border-t-4 border-r-4 border-white rounded-tr-[2rem]"
+          ></div>
+
+          <!-- BL -->
+          <div
+            class="absolute bottom-0 left-0 w-10 h-10 border-b-4 border-l-4 border-white rounded-bl-[2rem]"
+          ></div>
+
+          <!-- BR -->
+          <div
+            class="absolute bottom-0 right-0 w-10 h-10 border-b-4 border-r-4 border-white rounded-br-[2rem]"
+          ></div>
+        </div>
+
         <div
           class="pointer-events-none absolute inset-0 flex items-center justify-center"
         ></div>

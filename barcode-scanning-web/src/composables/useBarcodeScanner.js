@@ -23,22 +23,22 @@ export function useBarcodeScanner() {
  function fixIOSVideoInline(video) {
   if (!video) return;
 
-  video.setAttribute("playsinline", "");
-  video.setAttribute("webkit-playsinline", "");
-  video.setAttribute("muted", "");
-  video.setAttribute("autoplay", "");
+  video.setAttribute("playsinline", "true");
+  video.setAttribute("webkit-playsinline", "true");
+  video.setAttribute("muted", "true");
+  video.setAttribute("autoplay", "true");
   video.setAttribute("poster", "");
 
   video.playsInline = true;
   video.muted = true;
   video.autoplay = true;
   video.controls = false;
-
   video.removeAttribute("controls");
 
   video.style.width = "100%";
   video.style.height = "100%";
   video.style.objectFit = "cover";
+  // await video.play();
 }
 
  async function startScanner() {
