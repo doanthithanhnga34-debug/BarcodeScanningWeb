@@ -21,6 +21,7 @@ const {
   loadDevices,
   scanAgain,
   capturedImage,
+  needsCameraTap,
 } = useBarcodeScanner();
 
 const route = useRoute();
@@ -33,9 +34,6 @@ const productError = ref("");
 const MIN_LOADING_TIME = 5000;
 const isProductPreloaded = ref(false);
 
-const videoPaintKey = ref(0);
-const isVideoReady = ref(false);
-
 const selectedBranch = computed(() => {
   const branch = sessionStorage.getItem("selectedBranch");
 
@@ -45,68 +43,120 @@ const selectedBranch = computed(() => {
 function delay(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
-function fixIOSVideoInline() {
-  const video = videoRef.value;
+// function fixIOSVideoInline() {
+//   const video = videoRef.value;
 
-  if (!video) return;
+//   if (!video) return;
 
-  video.setAttribute("playsinline", "true");
-  video.setAttribute("webkit-playsinline", "true");
-  video.setAttribute("muted", "true");
-  video.setAttribute("autoplay", "true");
+//   video.setAttribute("playsinline", "true");
+//   video.setAttribute("webkit-playsinline", "true");
+//   video.setAttribute("muted", "true");
+//   video.setAttribute("autoplay", "true");
 
-  video.playsInline = true;
-  video.muted = true;
-  video.autoplay = true;
-  video.controls = false;
+//   video.playsInline = true;
+//   video.muted = true;
+//   video.autoplay = true;
+//   video.controls = false;
 
-  video.removeAttribute("controls");
-}
-async function forceVideoRepaint() {
-  await nextTick();
+//   video.removeAttribute("controls");
+// }
+// async function forceVideoRepaint() {
+//   await nextTick();
 
-  const video = videoRef.value;
-  if (!video) return;
+//   const video = videoRef.value;
+//   if (!video) return;
 
-  // Force layout read
-  video.getBoundingClientRect();
+//   // Force layout read
+//   video.getBoundingClientRect();
 
-  // Force Safari repaint layer
-  video.style.transform = "translateZ(0) scale(1.0001)";
+//   // Force Safari repaint layer
+//   video.style.transform = "translateZ(0) scale(1.0001)";
 
-  await new Promise((resolve) => requestAnimationFrame(resolve));
+//   await new Promise((resolve) => requestAnimationFrame(resolve));
 
-  video.style.transform = "translateZ(0) scale(1)";
+//   video.style.transform = "translateZ(0) scale(1)";
 
-  await new Promise((resolve) => requestAnimationFrame(resolve));
+//   await new Promise((resolve) => requestAnimationFrame(resolve));
 
-  isVideoReady.value = true;
-}
-async function ensureVideoPlaying() {
-  await nextTick();
+//   isVideoReady.value = true;
+// }
+// async function ensureVideoPlaying() {
+//   await nextTick();
 
-  fixIOSVideoInline();
+//   fixIOSVideoInline();
 
-  const video = videoRef.value;
+//   const video = videoRef.value;
 
-  if (!video) return;
+//   if (!video) return;
 
-  try {
-    await video.play();
-    await forceVideoRepaint();
-  } catch (err) {
-    console.warn("Video play warning:", err);
-  }
-}
-watch(showCamera, async (visible) => {
-  if (!visible) return;
-  await ensureVideoPlaying();
-});
-async function handleVideoLoadedMetadata() {
-  fixIOSVideoInline();
-  await ensureVideoPlaying();
-}
+//   try {
+//     await video.play();
+//     await forceVideoRepaint();
+//   } catch (err) {
+//     console.warn("Video play warning:", err);
+//   }
+// }
+// watch(showCamera, async (visible) => {
+//   if (!visible) return;
+//   await ensureVideoPlaying();
+// });
+// async function handleVideoLoadedMetadata() {
+//   fixIOSVideoInline();
+//   await ensureVideoPlaying();
+// }
 
+// onMounted(async () => {
+//   if (!selectedBranch.value) {
+//     router.push("/");
+//     return;
+//   }
+
+//   isPreloading.value = true;
+
+//   const cachedProducts = getProductCache(selectedBranch.value);
+//   // const cachedProducts = getProductCache(selectedBranch.value);
+
+//   console.log(
+//     "cachedProducts type:",
+//     Array.isArray(cachedProducts) ? "array" : typeof cachedProducts,
+//   );
+//   console.log(
+//     "cachedProducts count:",
+//     cachedProducts ? Object.keys(cachedProducts).length : 0,
+//   );
+//   console.log(
+//     "sample cache keys:",
+//     cachedProducts ? Object.keys(cachedProducts).slice(0, 5) : [],
+//   );
+
+//   if (cachedProducts) {
+//     productMap.value = cachedProducts;
+//     isPreloading.value = true;
+//     console.log("Preload product from cache");
+//   }
+
+//   getAllProducts(selectedBranch.value).then((response) => {
+//     const products = response?.data ?? response ?? {};
+
+//     productMap.value = products;
+//     setProductCache(selectedBranch.value, products);
+//     isProductPreloaded.value = true;
+
+//     console.log("Product cache refreshed:", Object.keys(products).length);
+//   });
+
+//   await nextTick();
+
+//   if (route.query.autoStart === "1") {
+//     try {
+//       await startScanner();
+//       await ensureVideoPlaying();
+//     } catch (err) {
+//       console.error("Lỗi start scanner:", err);
+//     }
+//   }
+//   isPreloading.value = false;
+// });
 onMounted(async () => {
   if (!selectedBranch.value) {
     router.push("/");
@@ -116,48 +166,44 @@ onMounted(async () => {
   isPreloading.value = true;
 
   const cachedProducts = getProductCache(selectedBranch.value);
-  // const cachedProducts = getProductCache(selectedBranch.value);
-
-  console.log(
-    "cachedProducts type:",
-    Array.isArray(cachedProducts) ? "array" : typeof cachedProducts,
-  );
-  console.log(
-    "cachedProducts count:",
-    cachedProducts ? Object.keys(cachedProducts).length : 0,
-  );
-  console.log(
-    "sample cache keys:",
-    cachedProducts ? Object.keys(cachedProducts).slice(0, 5) : [],
-  );
 
   if (cachedProducts) {
     productMap.value = cachedProducts;
-    isPreloading.value = true;
-    console.log("Preload product from cache");
   }
 
-  getAllProducts(selectedBranch.value).then((response) => {
-    const products = response?.data ?? response ?? {};
+  getAllProducts(selectedBranch.value)
+    .then((response) => {
+      const products = response?.data ?? response ?? {};
 
-    productMap.value = products;
-    setProductCache(selectedBranch.value, products);
-    isProductPreloaded.value = true;
+      productMap.value = products;
 
-    console.log("Product cache refreshed:", Object.keys(products).length);
-  });
+      setProductCache(selectedBranch.value, products);
+
+      isProductPreloaded.value = true;
+    })
+    .catch((error) => {
+      console.error("Lỗi preload product:", error);
+    });
+
+  /*
+   * Để video hiển thị trước khi yêu cầu camera.
+   */
+  isPreloading.value = false;
 
   await nextTick();
 
-  if (route.query.autoStart === "1") {
-    try {
-      await startScanner();
-      await ensureVideoPlaying();
-    } catch (err) {
-      console.error("Lỗi start scanner:", err);
-    }
-  }
-  isPreloading.value = false;
+  /*
+   * Nếu muốn lúc nào vào trang cũng tự mở:
+   */
+  await startScanner();
+
+  /*
+   * Hoặc chỉ tự mở khi có query autoStart=1:
+   *
+   * if (route.query.autoStart === "1") {
+   *   await startScanner();
+   * }
+   */
 });
 
 watch(
@@ -205,16 +251,22 @@ function goBackToBranch() {
   stopScanner();
   router.back();
 }
+// async function scanAgainBarcode() {
+//   product.value = null;
+//   productError.value = "";
+
+//   try {
+//     await scanAgain();
+//     await ensureVideoPlaying();
+//   } catch (err) {
+//     console.error("Lỗi scan again:", err);
+//   }
+// }
 async function scanAgainBarcode() {
   product.value = null;
   productError.value = "";
 
-  try {
-    await scanAgain();
-    await ensureVideoPlaying();
-  } catch (err) {
-    console.error("Lỗi scan again:", err);
-  }
+  await scanAgain();
 }
 </script>
 <template>
@@ -256,8 +308,8 @@ async function scanAgainBarcode() {
       <div
         class="scanner-box relative w-full h-[430px] bg-black overflow-hidden rounded-[2rem]"
       >
-      <p>ânjj</p>
-        <video
+        <p>ânjj</p>
+        <!-- <video
           id="scanner-video"
           ref="videoRef"
           autoplay
@@ -268,8 +320,31 @@ async function scanAgainBarcode() {
           controlslist="nodownload nofullscreen noremoteplayback"
           class="h-full w-full object-cover scanner-video"
           @loadedmetadata="handleVideoLoadedMetadata"
-        />
+        /> -->
+        <video
+          v-show="showCamera"
+          id="scanner-video"
+          ref="videoRef"
+          autoplay
+          muted
+          playsinline
+          webkit-playsinline="true"
+          disablepictureinpicture
+          disableremoteplayback
+          x-webkit-airplay="deny"
+          class="scanner-video"
+        ></video>
 
+        <div v-if="needsCameraTap" class="camera-fallback">
+          <button
+            type="button"
+            class="camera-fallback-button"
+            @click="startScanner"
+          >
+            <i class="pi pi-camera"></i>
+            <span>Bật camera</span>
+          </button>
+        </div>
         <img
           v-if="capturedImage"
           :src="capturedImage"
