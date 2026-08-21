@@ -41,65 +41,108 @@ export function useBarcodeScanner() {
   // await video.play();
 }
 
- async function startScanner() {
-  if (scannerStarted.value) return;
-  if (isScanning.value) return;
+//  async function startScanner() {
+//   if (scannerStarted.value) return;
+//   if (isScanning.value) return;
 
+//   try {
+//     result.value = null;
+//     errorMessage.value = "";
+//     showCamera.value = true;
+//     isScanning.value = true;
+//     scanLocked.value = false;
+
+//     await nextTick();
+
+//     if (!videoRef.value) {
+//       throw new Error("Camera view not found");
+//     }
+
+//     fixIOSVideoInline(videoRef.value);
+
+//     await startZxingScanner(
+//       videoRef.value,
+//       selectedDeviceId.value || "",
+//       (value) => {
+//         if (scanLocked.value) return;
+//         scanLocked.value = true;
+//         result.value = value;
+//         capturedImage.value = value.image || null;
+//         saveToHistory(value.text);
+//         finishScanner();
+//       },
+//       (error) => {
+//         const ignoreErrors = [
+//           "NotFoundException",
+//           "ChecksumException",
+//           "FormatException",
+//         ];
+
+//         if (ignoreErrors.includes(error?.name)) return;
+
+//         console.error(error);
+//       },
+//     );
+
+//     await nextTick();
+//     fixIOSVideoInline(videoRef.value);
+
+//     if (videoRef.value) {
+//       videoRef.value.play().catch((err) => {
+//         console.warn("iOS video play warning:", err);
+//       });
+//     }
+
+//     scannerStarted.value = true;
+//   } catch (err) {
+//     console.error(err);
+//     errorMessage.value = err.message || "Unable to open camera";
+//     isScanning.value = false;
+//     showCamera.value = false;
+//     scannerStarted.value = false;
+//   }
+// }
+async function startScanner() {
   try {
-    result.value = null;
-    errorMessage.value = "";
     showCamera.value = true;
-    isScanning.value = true;
-    scanLocked.value = false;
 
     await nextTick();
 
-    if (!videoRef.value) {
-      throw new Error("Camera view not found");
+    const video = videoRef.value;
+
+    if (!video) {
+      throw new Error("Không tìm thấy video element");
     }
 
-    fixIOSVideoInline(videoRef.value);
+    // Phải cấu hình trước khi gắn stream và trước khi play
+    video.playsInline = true;
+    video.muted = true;
+    video.autoplay = true;
+    video.controls = false;
 
-    await startZxingScanner(
-      videoRef.value,
-      selectedDeviceId.value || "",
-      (value) => {
-        if (scanLocked.value) return;
-        scanLocked.value = true;
-        result.value = value;
-        capturedImage.value = value.image || null;
-        saveToHistory(value.text);
-        finishScanner();
+    video.setAttribute("playsinline", "playsinline");
+    video.setAttribute("webkit-playsinline", "webkit-playsinline");
+    video.setAttribute("muted", "muted");
+    video.removeAttribute("controls");
+
+    const stream = await navigator.mediaDevices.getUserMedia({
+      video: {
+        facingMode: {
+          ideal: "environment",
+        },
       },
-      (error) => {
-        const ignoreErrors = [
-          "NotFoundException",
-          "ChecksumException",
-          "FormatException",
-        ];
+      audio: false,
+    });
 
-        if (ignoreErrors.includes(error?.name)) return;
+    video.srcObject = stream;
 
-        console.error(error);
-      },
-    );
+    // Chỉ gọi đúng một lần tại đây
+    await video.play();
 
-    await nextTick();
-    fixIOSVideoInline(videoRef.value);
-
-    if (videoRef.value) {
-      videoRef.value.play().catch((err) => {
-        console.warn("iOS video play warning:", err);
-      });
-    }
-
-    scannerStarted.value = true;
-  } catch (err) {
-    console.error(err);
-    errorMessage.value = err.message || "Unable to open camera";
-    isScanning.value = false;
-    showCamera.value = false;
-    scannerStarted.value = false;
+    // Bắt đầu xử lý barcode sau đó
+  } catch (error) {
+    console.error("Start scanner error:", error);
+    errorMessage.value = error.message;
   }
 }
 

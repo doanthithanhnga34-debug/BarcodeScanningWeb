@@ -44,46 +44,71 @@ const selectedBranch = computed(() => {
 function delay(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
-function fixIOSVideoInline() {
+// function fixIOSVideoInline() {
+//   const video = videoRef.value;
+
+//   if (!video) return;
+
+//   video.setAttribute("playsinline", "");
+//   video.setAttribute("webkit-playsinline", "");
+//   video.setAttribute("muted", "");
+//   video.setAttribute("autoplay", "");
+
+//   video.playsInline = true;
+//   video.muted = true;
+//   video.autoplay = true;
+//   video.controls = false;
+
+//   video.removeAttribute("controls");
+// }
+function prepareInlineVideo() {
   const video = videoRef.value;
 
   if (!video) return;
-
-  video.setAttribute("playsinline", "");
-  video.setAttribute("webkit-playsinline", "");
-  video.setAttribute("muted", "");
-  video.setAttribute("autoplay", "");
 
   video.playsInline = true;
   video.muted = true;
   video.autoplay = true;
   video.controls = false;
+  video.disablePictureInPicture = true;
+
+  video.setAttribute("playsinline", "playsinline");
+  video.setAttribute("webkit-playsinline", "webkit-playsinline");
+  video.setAttribute("muted", "muted");
 
   video.removeAttribute("controls");
 }
+// watch(showCamera, async (visible) => {
+//   if (!visible) return;
 
+//   await nextTick();
+//   fixIOSVideoInline();
+
+//   const video = videoRef.value;
+//   if (video) {
+//     video.play().catch((err) => {
+//       console.warn("iOS video play warning:", err);
+//     });
+//   }
+// });
 watch(showCamera, async (visible) => {
   if (!visible) return;
 
   await nextTick();
-  fixIOSVideoInline();
-
-  const video = videoRef.value;
-  if (video) {
-    video.play().catch((err) => {
-      console.warn("iOS video play warning:", err);
-    });
-  }
+  prepareInlineVideo();
 });
-function handleVideoLoadedMetadata() {
-  fixIOSVideoInline();
+// function handleVideoLoadedMetadata() {
+//   fixIOSVideoInline();
 
-  const video = videoRef.value;
-  if (video) {
-    video.play().catch((err) => {
-      console.warn("iOS video metadata play warning:", err);
-    });
-  }
+//   const video = videoRef.value;
+//   if (video) {
+//     video.play().catch((err) => {
+//       console.warn("iOS video metadata play warning:", err);
+//     });
+//   }
+// }
+function handleVideoLoadedMetadata() {
+  prepareInlineVideo();
 }
 
 onMounted(async () => {
@@ -117,21 +142,20 @@ onMounted(async () => {
 
   if (route.query.autoStart === "1") {
     await nextTick();
-    fixIOSVideoInline();
+    prepareInlineVideo()
 
     await startScanner().catch((err) => {
       console.error("Lỗi start scanner:", err);
     });
 
-    await nextTick();
-    fixIOSVideoInline();
-
-    const video = videoRef.value;
-    if (video) {
-      video.play().catch((err) => {
-        console.warn("iOS video play warning:", err);
-      });
-    }
+    // await nextTick();
+    // prepareInlineVideo()
+    // const video = videoRef.value;
+    // if (video) {
+    //   video.play().catch((err) => {
+    //     console.warn("iOS video play warning:", err);
+    //   });
+    // }
   }
   isPreloading.value = false;
 });
@@ -178,26 +202,38 @@ function goBackToBranch() {
   stopScanner();
   router.back();
 }
+// async function scanAgainBarcode() {
+//   product.value = null;
+//   productError.value = "";
+
+//   await nextTick();
+//   fixIOSVideoInline();
+
+//   await scanAgain().catch((err) => {
+//     console.error("Lỗi scan again:", err);
+//   });
+
+//   await nextTick();
+//   fixIOSVideoInline();
+
+//   const video = videoRef.value;
+//   if (video) {
+//     video.play().catch((err) => {
+//       console.warn("iOS video play warning:", err);
+//     });
+//   }
+// }
+
 async function scanAgainBarcode() {
   product.value = null;
   productError.value = "";
 
   await nextTick();
-  fixIOSVideoInline();
+  prepareInlineVideo();
 
   await scanAgain().catch((err) => {
     console.error("Lỗi scan again:", err);
   });
-
-  await nextTick();
-  fixIOSVideoInline();
-
-  const video = videoRef.value;
-  if (video) {
-    video.play().catch((err) => {
-      console.warn("iOS video play warning:", err);
-    });
-  }
 }
 </script>
 <template>
@@ -339,22 +375,25 @@ async function scanAgainBarcode() {
   background: #000;
   overflow: hidden;
   z-index: 1;
+  isolation: isolate;
 }
 
 .scanner-video {
   position: absolute;
   inset: 0;
   z-index: 1;
+
   width: 100%;
   height: 100%;
+
   object-fit: cover;
   background: #000;
 
-  /* Fix iOS Safari video layer */
-  transform: translateZ(0);
-  -webkit-transform: translateZ(0);
-}
+  pointer-events: none;
 
+  transform: none;
+  -webkit-transform: none;
+}
 .scanner-header {
   position: fixed;
   top: env(safe-area-inset-top, 0px);
