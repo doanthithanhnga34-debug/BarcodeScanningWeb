@@ -36,8 +36,8 @@ export function useBarcodeScanner() {
   video.removeAttribute("controls");
 
   video.style.width = "100%";
-  video.style.height = "100%";
-  video.style.objectFit = "cover";
+  // video.style.height = "100%";
+  // video.style.objectFit = "cover";
   // await video.play();
 }
 

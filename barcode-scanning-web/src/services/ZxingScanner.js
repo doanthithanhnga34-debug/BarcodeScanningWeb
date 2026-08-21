@@ -65,8 +65,8 @@
 
     // Một số iPhone/Safari vẫn cố hiện native controls nếu chưa có style trực tiếp
     video.style.width = "100%";
-    video.style.height = "100%";
-    video.style.objectFit = "cover";
+    // video.style.height = "100%";
+    // video.style.objectFit = "cover";
   }
   export function unlockZxingScanner() {
     isResultLocked = false;
