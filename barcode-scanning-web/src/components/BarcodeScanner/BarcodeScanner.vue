@@ -321,19 +321,21 @@ async function scanAgainBarcode() {
           class="h-full w-full object-cover scanner-video"
           @loadedmetadata="handleVideoLoadedMetadata"
         /> -->
-        <video
-          v-show="showCamera"
-          id="scanner-video"
-          ref="videoRef"
-          autoplay
-          muted
-          playsinline
-          webkit-playsinline="true"
-          disablepictureinpicture
-          disableremoteplayback
-          x-webkit-airplay="deny"
-          class="scanner-video"
-        ></video>
+        <div class="scanner-video-clip">
+          <video
+            v-show="showCamera"
+            id="scanner-video"
+            ref="videoRef"
+            autoplay
+            muted
+            playsinline
+            webkit-playsinline="true"
+            disablepictureinpicture
+            disableremoteplayback
+            x-webkit-airplay="deny"
+            class="scanner-video"
+          ></video>
+        </div>
 
         <div v-if="needsCameraTap" class="camera-fallback">
           <button
