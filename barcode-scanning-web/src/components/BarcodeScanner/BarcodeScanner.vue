@@ -308,7 +308,6 @@ async function scanAgainBarcode() {
       <div
         class="scanner-box relative w-full h-[430px] bg-black overflow-hidden rounded-[2rem]"
       >
-        <p>ânjj</p>
         <!-- <video
           id="scanner-video"
           ref="videoRef"
